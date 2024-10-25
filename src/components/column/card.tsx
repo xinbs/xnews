@@ -143,7 +143,7 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
         defer
       >
         <div className={clsx("transition-opacity-500", isFreshFetching && "op-20")}>
-          {data?.items?.length && (sources[id].type === "hottest" ? <NewsListHot items={data.items} /> : <NewsListTimeLine items={data.items} />)}
+          {!!data?.items?.length && (sources[id].type === "hottest" ? <NewsListHot items={data.items} /> : <NewsListTimeLine items={data.items} />)}
         </div>
       </OverlayScrollbar>
     </>

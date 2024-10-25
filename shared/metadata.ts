@@ -7,11 +7,11 @@ export const columnIds = ["focus", "realtime", "hottest", "china", "world", "tec
 const originMetadata: Metadata = {
   china: {
     name: "国内",
-    sources: ["zhihu", "thepaper"],
+    sources: ["zhihu", "thepaper", "douyin", "bilibili-hot-search", "weibo", "toutiao", "tieba"],
   },
   world: {
     name: "国际",
-    sources: ["zaobao", "cankaoxiaoxi"],
+    sources: ["zaobao", "cankaoxiaoxi", "kaopu"],
   },
   tech: {
     name: "科技",
