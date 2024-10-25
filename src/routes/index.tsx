@@ -9,5 +9,5 @@ export const Route = createFileRoute("/")({
 
 function IndexComponent() {
   const focusSources = useAtomValue(focusSourcesAtom)
-  return <Column id={focusSources.length ? "focus" : "realtime"} />
+  return <Column id={focusSources.length ? "focus" : "hottest"} />
 }

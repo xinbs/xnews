@@ -1,68 +1,54 @@
 import { sources } from "./sources"
 import { typeSafeObjectEntries, typeSafeObjectFromEntries } from "./type.util"
-import type { Metadata } from "./types"
+import type { ColumnID, Metadata, SourceID } from "./types"
 
 export const columnIds = ["focus", "realtime", "hottest", "china", "world", "tech", "finance"] as const
 
-const originMetadata: Metadata = {
+const columnName: Record<ColumnID, { zh: string }> = {
   china: {
-    name: "国内",
-    sources: ["zhihu", "thepaper", "douyin", "bilibili-hot-search", "weibo", "toutiao", "tieba"],
+    zh: "国内",
   },
   world: {
-    name: "国际",
-    sources: ["zaobao", "cankaoxiaoxi", "kaopu"],
+    zh: "国际",
   },
   tech: {
-    name: "科技",
-    sources: ["hackernews", "producthunt", "github-trending-today", "v2ex", "ithome", "coolapk", "solidot"],
+    zh: "科技",
   },
   finance: {
-    name: "财经",
-    sources: [
-      "cls-telegraph",
-      "cls-depth",
-      "wallstreetcn",
-      "wallstreetcn-hot",
-      "wallstreetcn-news",
-      "xueqiu-hotstock",
-      "gelonghui",
-      "fastbull-express",
-      "fastbull-news",
-    ],
+    zh: "财经",
   },
   focus: {
-    name: "关注",
-    sources: [],
+    zh: "关注",
   },
   realtime: {
-    name: "实时",
-    sources: [],
+    zh: "实时",
   },
   hottest: {
-    name: "最热",
-    sources: [],
+    zh: "最热",
   },
 }
 
-export const metadata = typeSafeObjectFromEntries(typeSafeObjectEntries(originMetadata).map(([k, v]) => {
+export const metadata: Metadata = typeSafeObjectFromEntries(typeSafeObjectEntries(columnName).map(([k, v]) => {
   switch (k) {
     case "focus":
-      return [k, v]
+      return [k, {
+        name: v.zh,
+        sources: [] as SourceID[],
+      }]
     case "hottest":
       return [k, {
-        ...v,
+        name: v.zh,
         sources: typeSafeObjectEntries(sources).filter(([, v]) => v.type === "hottest" && !v.redirect).map(([k]) => k),
       }]
     case "realtime":
       return [k, {
-        ...v,
-        sources: ["weibo", ...typeSafeObjectEntries(sources).filter(([, v]) => v.type === "realtime" && !v.redirect).map(([k]) => k)],
+        name: v.zh,
+        sources: typeSafeObjectEntries(sources).filter(([, v]) => v.type === "realtime" && !v.redirect).map(([k]) => k),
       }]
     default:
       return [k, {
-        ...v,
-        sources: v.sources.filter(s => sources[s]),
+        name: v.zh,
+        sources: typeSafeObjectEntries(sources).filter(([, v]) => v.column === k && !v.redirect).map(([k]) => k),
       }]
   }
 }))

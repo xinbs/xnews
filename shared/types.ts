@@ -33,40 +33,48 @@ export interface PrimitiveMetadata {
   action: "init" | "manual" | "sync"
 }
 
-export interface OriginSource {
+type ManualColumnID = Exclude<ColumnID, "focus" | "realtime" | "hottest">
+
+export interface OriginSource extends Partial<Omit<Source, "name" | "redirect">> {
   name: string
-  title?: string
-  desc?: string
-  /**
-   * 刷新的间隔时间，复用缓存
-   */
-  interval?: number
-  type?: "hottest" | "realtime"
-  /**
-   * @default false
-   */
-  disable?: boolean
-  home?: string
-  color?: Color
   sub?: Record<string, {
+    /**
+     * Subtitle 小标题
+     */
     title: string
-    type?: "hottest" | "realtime"
-    desc?: string
-    home?: string
-    disable?: boolean
-    interval?: number
-  }>
+    // type?: "hottest" | "realtime"
+    // desc?: string
+    // column?: ManualColumnID
+    // color?: Color
+    // home?: string
+    // disable?: boolean
+    // interval?: number
+  } & Partial<Omit<Source, "title" | "name" | "redirect">>>
 }
 
 export interface Source {
   name: string
-  title?: string
-  type?: "hottest" | "realtime"
-  color: Color
-  desc?: string
-  home?: string
-  disable?: boolean
+  /**
+   * 刷新的间隔时间
+   */
   interval: number
+  color: Color
+
+  /**
+   * Subtitle 小标题
+   */
+  title?: string
+  desc?: string
+  /**
+   * Default normal timeline
+   */
+  type?: "hottest" | "realtime"
+  column?: ManualColumnID
+  home?: string
+  /**
+   * @default false
+   */
+  disable?: boolean
   redirect?: SourceID
 }
 
