@@ -9,8 +9,7 @@ type Res = {
 export default defineSource(async () => {
   const url = "https://kaopucdn.azureedge.net/jsondata/news_list_beta_hans_0.json"
   const res: Res = await $fetch(url)
-  return res
-    .slice(0, 30)
+  return res.filter(k => ["财新", "公视"].every(h => k.publisher !== h))
     .map((k) => {
       return {
         id: k.link,

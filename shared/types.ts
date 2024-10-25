@@ -36,6 +36,7 @@ export interface PrimitiveMetadata {
 export interface OriginSource {
   name: string
   title?: string
+  desc?: string
   /**
    * 刷新的间隔时间，复用缓存
    */
@@ -45,11 +46,13 @@ export interface OriginSource {
    * @default false
    */
   disable?: boolean
-  home: string
+  home?: string
   color?: Color
   sub?: Record<string, {
     title: string
     type?: "hottest" | "realtime"
+    desc?: string
+    home?: string
     disable?: boolean
     interval?: number
   }>
@@ -60,6 +63,8 @@ export interface Source {
   title?: string
   type?: "hottest" | "realtime"
   color: Color
+  desc?: string
+  home?: string
   disable?: boolean
   interval: number
   redirect?: SourceID

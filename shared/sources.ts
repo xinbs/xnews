@@ -228,6 +228,7 @@ export const originSources = {
   "kaopu": {
     name: "靠谱新闻",
     color: "gray",
+    desc: "不一定靠谱，多看多思考",
     home: "https://kaopu.news/",
   },
 } as const satisfies Record<string, OriginSource>
@@ -241,6 +242,8 @@ function genSources() {
       name: source.name,
       type: source.type,
       disable: source.disable,
+      desc: source.desc,
+      home: source.home,
       color: source.color ?? "primary",
       interval: source.interval ?? Time.Default,
     }

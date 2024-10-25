@@ -96,15 +96,20 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
     <>
       <div className={clsx("flex justify-between mx-2 mt-0 mb-2 items-center")}>
         <div className="flex gap-2 items-center">
-          <span
-            className={clsx("w-8 h-8 rounded-full bg-cover")}
+          <a
+            className={clsx("w-8 h-8 rounded-full bg-cover hover:animate-spin")}
+            href={sources[id].home}
+            title={sources[id].desc}
             style={{
               backgroundImage: `url(/icons/${id.split("-")[0]}.png)`,
             }}
           />
           <span className="flex flex-col">
             <span className="flex items-center gap-2">
-              <span className="text-xl font-bold">
+              <span
+                className="text-xl font-bold"
+                title={sources[id].desc}
+              >
                 {sources[id].name}
               </span>
               {sources[id]?.title && <span className={clsx("text-sm", `color-${sources[id].color} bg-base op-80 bg-op-50! px-1 rounded`)}>{sources[id].title}</span>}
