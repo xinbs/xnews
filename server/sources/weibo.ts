@@ -36,7 +36,10 @@ export default defineSource(async () => {
         id: k.num,
         title: k.word,
         extra: {
-          icon: k.icon && `/api/proxy?img=${encodeURIComponent(k.icon)}`,
+          icon: k.icon && {
+            url: `/api/proxy?img=${encodeURIComponent(k.icon)}`,
+            scale: 1.5,
+          },
         },
         url: `https://s.weibo.com/weibo?q=${encodeURIComponent(keyword)}`,
         mobileUrl: `https://m.weibo.cn/search?containerid=231522type%3D1%26q%3D${encodeURIComponent(keyword)}&_T_WM=16922097837&v_p=42`,

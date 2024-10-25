@@ -1,5 +1,4 @@
 import type { NewsItem, SourceID, SourceResponse } from "@shared/types"
-import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
 import clsx from "clsx"
 import { useInView } from "framer-motion"
@@ -25,12 +24,8 @@ export interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 interface NewsCardProps {
   id: SourceID
-  inView: boolean
   handleListeners?: SyntheticListenerMap
-}
-
-interface Query {
-  query: UseQueryResult<SourceResponse, Error>
+  inView: boolean
 }
 
 export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragged, handleListeners, style, ...props }, dndRef) => {
@@ -62,7 +57,7 @@ export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragg
 function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
   const [focusSources, setFocusSources] = useAtom(focusSourcesAtom)
   const [refetchSource, setRefetchSource] = useAtom(refetchSourcesAtom)
-  const query = useQuery({
+  const { data, isFetching, isPlaceholderData, isError } = useQuery({
     queryKey: [id, refetchSource[id]],
     queryFn: async ({ queryKey }) => {
       const [_id, _refetchTime] = queryKey as [SourceID, number]
@@ -95,7 +90,7 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
     }))
   }, [setRefetchSource, id])
 
-  const isFreshFetching = useMemo(() => query.isFetching && !query.isPlaceholderData, [query])
+  const isFreshFetching = useMemo(() => isFetching && !isPlaceholderData, [isFetching, isPlaceholderData])
 
   return (
     <>
@@ -114,13 +109,13 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
               </span>
               {sources[id]?.title && <span className={clsx("text-sm", `color-${sources[id].color} bg-base op-80 bg-op-50! px-1 rounded`)}>{sources[id].title}</span>}
             </span>
-            <span className="text-xs op-70"><UpdatedTime query={query} /></span>
+            <span className="text-xs op-70"><UpdatedTime isError={isError} updatedTime={data?.updatedTime} /></span>
           </span>
         </div>
         <div className={clsx("flex gap-2 text-lg", `color-${sources[id].color}`)}>
           <button
             type="button"
-            className={clsx("btn i-ph:arrow-counter-clockwise-duotone", query.isFetching && "animate-spin i-ph:circle-dashed-duotone")}
+            className={clsx("btn i-ph:arrow-counter-clockwise-duotone", isFetching && "animate-spin i-ph:circle-dashed-duotone")}
             onClick={manualRefetch}
           />
           <button
@@ -148,17 +143,17 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
         defer
       >
         <div className={clsx("transition-opacity-500", isFreshFetching && "op-20")}>
-          {sources[id].type === "hottest" ? <NewsListHot query={query} /> : <NewsListTimeLine query={query} />}
+          {data?.items?.length && (sources[id].type === "hottest" ? <NewsListHot items={data.items} /> : <NewsListTimeLine items={data.items} />)}
         </div>
       </OverlayScrollbar>
     </>
   )
 }
 
-function UpdatedTime({ query }: Query) {
-  const updatedTime = useRelativeTime(query.data?.updatedTime ?? "")
-  if (updatedTime) return `${updatedTime}更新`
-  if (query.isError) return "获取失败"
+function UpdatedTime({ isError, updatedTime }: { updatedTime: any, isError: boolean }) {
+  const relativeTime = useRelativeTime(updatedTime ?? "")
+  if (relativeTime) return `${relativeTime}更新`
+  if (isError) return "获取失败"
   return "加载中..."
 }
 
@@ -167,7 +162,17 @@ function ExtraInfo({ item }: { item: NewsItem }) {
     return <>{item.extra.info}</>
   }
   if (item?.extra?.icon) {
-    return <img src={item.extra.icon} className="w-5 inline" onError={e => e.currentTarget.hidden = true} />
+    const { url, scale } = item.extra.icon
+    return (
+      <img
+        src={url ?? item.extra.icon}
+        style={{
+          transform: `scale(${scale ?? 1})`,
+        }}
+        className="h-4 inline mt--1"
+        onError={e => e.currentTarget.hidden = true}
+      />
+    )
   }
 }
 
@@ -175,8 +180,7 @@ function NewsUpdatedTime({ date }: { date: string }) {
   const relativeTime = useRelativeTime(date)
   return <>{relativeTime}</>
 }
-function NewsListHot({ query }: Query) {
-  const items = query.data?.items
+function NewsListHot({ items }: { items: NewsItem[] }) {
   const { width } = useWindowSize()
   return (
     <>
@@ -208,8 +212,7 @@ function NewsListHot({ query }: Query) {
   )
 }
 
-function NewsListTimeLine({ query }: Query) {
-  const items = query.data?.items
+function NewsListTimeLine({ items }: { items: NewsItem[] }) {
   const { width } = useWindowSize()
   return (
     <ol className="border-s border-neutral-400/50 flex flex-col ml-1">
