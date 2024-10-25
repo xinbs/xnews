@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
   if (["JWT_SECRET", "G_CLIENT_ID", "G_CLIENT_SECRET"].find(k => !process.env[k])) {
     event.context.disabledLogin = true
-    if (!url.pathname.startsWith("/api/s"))
+    if (["/api/s", "/api/proxy"].every(p => !url.pathname.startsWith(p)))
       throw createError({ statusCode: 506, message: "Server not configured, disable login" })
   } else {
     if (["/api/s", "/api/me"].find(p => url.pathname.startsWith(p))) {
