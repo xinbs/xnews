@@ -1,14 +1,17 @@
-import { useEffect, useMemo } from "react"
-import { useLocalStorage, useMedia } from "react-use"
+import { useMemo } from "react"
+import { useMedia, useUpdateEffect } from "react-use"
+import { atomWithStorage } from "jotai/utils"
+import { useAtom } from "jotai"
 
 export declare type ColorScheme = "dark" | "light" | "auto"
 
-export function useDark(key = "color-scheme", defaultColorScheme: ColorScheme = "auto") {
-  const [colorScheme, setColorScheme] = useLocalStorage(key, defaultColorScheme)
+const colorSchemeAtom = atomWithStorage("color-scheme", "auto")
+export function useDark() {
+  const [colorScheme, setColorScheme] = useAtom(colorSchemeAtom)
   const prefersDarkMode = useMedia("(prefers-color-scheme: dark)")
   const isDark = useMemo(() => colorScheme === "auto" ? prefersDarkMode : colorScheme === "dark", [colorScheme, prefersDarkMode])
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     document.documentElement.classList.toggle("dark", isDark)
   }, [isDark])
 

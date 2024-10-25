@@ -138,7 +138,7 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
 
       <OverlayScrollbar
         className={clsx([
-          "h-full p-2 overflow-x-auto rounded-2xl bg-base bg-op-70!",
+          "h-full p-2 overflow-y-auto rounded-2xl bg-base bg-op-70!",
           isFreshFetching && `animate-pulse`,
           `sprinkle-${sources[id].color}`,
         ])}

@@ -1,9 +1,10 @@
 import type { UseOverlayScrollbarsParams } from "overlayscrollbars-react"
 import { useOverlayScrollbars } from "overlayscrollbars-react"
 import type { HTMLProps, PropsWithChildren } from "react"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import { defu } from "defu"
 import { useSetAtom } from "jotai"
+import { useMount } from "react-use"
 import { goToTopAtom } from "~/atoms"
 
 type Props = HTMLProps<HTMLDivElement> & UseOverlayScrollbarsParams
@@ -26,17 +27,17 @@ export function OverlayScrollbar({ disabled, children, options, events, defer, .
 
   const [initialize] = useOverlayScrollbars(scrollbarParams)
 
-  useEffect(() => {
+  useMount(() => {
     if (!disabled) {
       initialize({
         target: ref.current!,
         cancel: {
-        // 如果浏览器原生滚动条是覆盖在元素上的，则取消初始化
+          // 如果浏览器原生滚动条是覆盖在元素上的，则取消初始化
           nativeScrollbarsOverlaid: true,
         },
       })
     }
-  }, [initialize, disabled])
+  })
 
   return (
     <div ref={ref} {...props}>
@@ -80,16 +81,13 @@ export function GlobalOverlayScrollbar({ children, ...props }: PropsWithChildren
     defer: false,
   })
 
-  useEffect(() => {
+  useMount(() => {
     initialize({
       target: ref.current!,
       cancel: {
         nativeScrollbarsOverlaid: true,
       },
     })
-  }, [initialize])
-
-  useEffect(() => {
     const el = ref.current
     if (el) {
       ref.current?.addEventListener("scroll", onScroll)
@@ -97,7 +95,7 @@ export function GlobalOverlayScrollbar({ children, ...props }: PropsWithChildren
         el?.removeEventListener("scroll", onScroll)
       }
     }
-  }, [onScroll])
+  })
 
   return (
     <div ref={ref} {...props}>
