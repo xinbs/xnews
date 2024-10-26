@@ -1,35 +1,44 @@
-interface Res {
+interface WapRes {
   code: number
-  message: string
-  ttl: number
-  data: {
-    trending: {
-      title: string
-      trackid: string
-      list: {
-        keyword: string
-        show_name: string
-        icon: string
-        uri: string
-        goto: string
-        heat_score: number
-      }[]
+  exp_str: string
+  list: {
+    hot_id: number
+    keyword: string
+    show_name: string
+    score: number
+    word_type: number
+    goto_type: number
+    goto_value: string
+    icon: string
+    live_id: any[]
+    call_reason: number
+    heat_layer: string
+    pos: number
+    id: number
+    status: string
+    name_type: string
+    resource_id: number
+    set_gray: number
+    card_values: any[]
+    heat_score: number
+    stat_datas: {
+      etime: string
+      stime: string
+      is_commercial: string
     }
-  }
+  }[]
+  top_list: any[]
+  hotword_egg_info: string
+  seid: string
+  timestamp: number
+  total_count: number
 }
 
 const hotSearch = defineSource(async () => {
-  const url = "https://api.bilibili.com/x/web-interface/wbi/search/square?limit=30"
-  const cookie = (await $fetch.raw(`https://bilibili.tv`)).headers.getSetCookie()
-  const res: Res = await $fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-      "cookie": cookie[0].replace(/.tv/g, ".com"),
-      "referer": "https://www.bilibili.com/",
-    },
-  })
+  const url = "https://s.search.bilibili.com/main/hotword?limit=30"
+  const res: WapRes = await $fetch(url)
 
-  return res.data.trending.list.map(k => ({
+  return res.list.map(k => ({
     id: k.keyword,
     title: k.show_name,
     url: `https://search.bilibili.com/all?keyword=${encodeURIComponent(k.keyword)}`,
