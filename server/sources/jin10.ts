@@ -25,9 +25,11 @@ export default defineSource(async () => {
 
   const rawData: string = await $fetch(url)
 
-  // eslint-disable-next-line no-new-func
-  const jsonStr = new Function(`${rawData}\nreturn newest;`)
-  const data: Jin10Item[] = jsonStr()
+  const jsonStr = (rawData as string)
+    .replace(/^var\s+newest\s*=\s*/, "") // 移除开头的变量声明
+    .replace(/;*$/, "") // 移除末尾可能存在的分号
+    .trim() // 移除首尾空白字符
+  const data: Jin10Item[] = JSON.parse(jsonStr)
 
   return data.filter(k => (k.data.title || k.data.content) && !k.channel?.includes(5)).map((k) => {
     const text = (k.data.title || k.data.content)!.replace(/<\/?b>/g, "")

@@ -269,7 +269,7 @@ export const originSources = {
   "jin10": {
     name: "金十数据",
     column: "finance",
-    color: "red",
+    color: "blue",
     home: "https://www.jin10.com",
   },
 } as const satisfies Record<string, OriginSource>
