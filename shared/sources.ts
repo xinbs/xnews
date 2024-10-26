@@ -241,7 +241,7 @@ export const originSources = {
     color: "blue",
     home: "https://www.bilibili.com",
     // cloudflare pages cannot access
-    disable: true,
+    // disable: true,
     sub: {
       "hot-search": {
         title: "热搜",

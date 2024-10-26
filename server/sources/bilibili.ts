@@ -20,11 +20,12 @@ interface Res {
 
 const hotSearch = defineSource(async () => {
   const url = "https://api.bilibili.com/x/web-interface/wbi/search/square?limit=30"
-
+  const cookie = (await $fetch.raw(`https://bilibili.tv`)).headers.getSetCookie()
   const res: Res = await $fetch(url, {
     headers: {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-      // "Cookie": "your_cookie_here"
+      "cookie": cookie[0].replace(/.tv/g, ".com"),
+      "referer": "https://www.bilibili.com/",
     },
   })
 
