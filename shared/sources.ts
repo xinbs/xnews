@@ -81,6 +81,7 @@ export const originSources = {
     name: "36氪",
     type: "realtime",
     color: "blue",
+    // cloudflare pages cannot access
     disable: true,
     home: "https://36kr.com",
     sub: {
@@ -135,6 +136,7 @@ export const originSources = {
   "sputniknewscn": {
     name: "卫星通讯社",
     color: "orange",
+    // cloudflare pages cannot access
     disable: true,
     home: "https://sputniknews.cn",
   },
@@ -238,6 +240,8 @@ export const originSources = {
     name: "哔哩哔哩",
     color: "blue",
     home: "https://www.bilibili.com",
+    // cloudflare pages cannot access
+    disable: true,
     sub: {
       "hot-search": {
         title: "热搜",
