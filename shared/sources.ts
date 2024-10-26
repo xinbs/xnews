@@ -266,6 +266,12 @@ export const originSources = {
     desc: "不一定靠谱，多看多思考",
     home: "https://kaopu.news/",
   },
+  "jin10": {
+    name: "金十数据",
+    column: "finance",
+    color: "red",
+    home: "https://www.jin10.com",
+  },
 } as const satisfies Record<string, OriginSource>
 
 export const sources = genSources()
