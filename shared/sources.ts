@@ -246,6 +246,13 @@ export const originSources = {
       },
     },
   },
+  "kuaishou": {
+    name: "快手",
+    type: "hottest",
+    column: "china",
+    color: "orange",
+    home: "https://www.kuaishou.com",
+  },
   "kaopu": {
     name: "靠谱新闻",
     column: "world",
