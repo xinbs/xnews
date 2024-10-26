@@ -251,6 +251,8 @@ export const originSources = {
     type: "hottest",
     column: "china",
     color: "orange",
+    // cloudflare pages cannot access
+    disable: true,
     home: "https://www.kuaishou.com",
   },
   "kaopu": {
