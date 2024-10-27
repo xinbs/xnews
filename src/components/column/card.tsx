@@ -1,9 +1,9 @@
 import type { NewsItem, SourceID, SourceResponse } from "@shared/types"
 import { useQuery } from "@tanstack/react-query"
 import clsx from "clsx"
-import { useInView } from "framer-motion"
+import { AnimatePresence, motion, useInView } from "framer-motion"
 import { useAtom } from "jotai"
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef } from "react"
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { sources } from "@shared/sources"
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
 import { ofetch } from "ofetch"
@@ -54,6 +54,7 @@ export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragg
   )
 })
 
+const prevSourceItems: Partial<Record<SourceID, NewsItem[]>> = {}
 function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
   const [focusSources, setFocusSources] = useAtom(focusSourcesAtom)
   const [refetchSource, setRefetchSource] = useAtom(refetchSourcesAtom)
@@ -72,10 +73,28 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
         timeout: 10000,
         headers,
       })
+
+      try {
+        if (response.items && sources[_id].type === "hottest" && prevSourceItems[_id]) {
+          response.items.forEach((item, i) => {
+            const o = prevSourceItems[_id]!.findIndex(k => k.id === item.id)
+            item.extra = {
+              ...item?.extra,
+              diff: o === -1 ? undefined : o - i,
+            }
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
       return response
     },
     // refetch 时显示原有的数据
-    placeholderData: prev => prev,
+    placeholderData: (prev) => {
+      if (prev?.items && sources[id].type === "hottest") prevSourceItems[id] = prev.items
+      return prev
+    },
     staleTime: 1000 * 60 * 5,
     enabled: inView,
   })
@@ -162,6 +181,31 @@ function UpdatedTime({ isError, updatedTime }: { updatedTime: any, isError: bool
   return "加载中..."
 }
 
+function DiffNumber({ diff }: { diff: number }) {
+  const [shown, setShown] = useState(true)
+  useEffect(() => {
+    setShown(true)
+    const timer = setTimeout(() => {
+      setShown(false)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [setShown, diff])
+
+  return (
+    <AnimatePresence>
+      { shown && (
+        <motion.span
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 0.5, y: -7 }}
+          exit={{ opacity: 0, y: -15 }}
+          className={clsx("absolute left-0 text-xs", diff < 0 ? "text-green" : "text-red")}
+        >
+          {diff > 0 ? `+${diff}` : diff}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  )
+}
 function ExtraInfo({ item }: { item: NewsItem }) {
   if (item?.extra?.info) {
     return <>{item.extra.info}</>
@@ -196,13 +240,14 @@ function NewsListHot({ items }: { items: NewsItem[] }) {
           key={item.id}
           title={item.extra?.hover}
           className={clsx(
-            "flex gap-2 items-center mb-2 items-stretch",
+            "flex gap-2 items-center mb-2 items-stretch relative",
             "hover:bg-neutral-400/10 rounded-md pr-1 visited:(text-neutral-400)",
           )}
         >
           <span className={clsx("bg-neutral-400/10 min-w-6 flex justify-center items-center rounded-md text-sm")}>
             {i + 1}
           </span>
+          {!!item.extra?.diff && <DiffNumber diff={item.extra.diff} />}
           <span className="self-start line-height-none">
             <span className="mr-2 text-base">
               {item.title}
