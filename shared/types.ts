@@ -89,7 +89,15 @@ export interface NewsItem {
   url: string
   mobileUrl?: string
   pubDate?: number | string
-  extra?: Record<string, any>
+  extra?: {
+    hover?: string
+    date?: number | string
+    info?: false | string
+    icon?: false | string | {
+      url: string
+      scale: number
+    }
+  }
 }
 
 export interface SourceResponse {

@@ -167,10 +167,10 @@ function ExtraInfo({ item }: { item: NewsItem }) {
     return <>{item.extra.info}</>
   }
   if (item?.extra?.icon) {
-    const { url, scale } = item.extra.icon
+    const { url, scale } = typeof item.extra.icon === "string" ? { url: item.extra.icon, scale: undefined } : item.extra.icon
     return (
       <img
-        src={url ?? item.extra.icon}
+        src={url}
         style={{
           transform: `scale(${scale ?? 1})`,
         }}
@@ -181,7 +181,7 @@ function ExtraInfo({ item }: { item: NewsItem }) {
   }
 }
 
-function NewsUpdatedTime({ date }: { date: string }) {
+function NewsUpdatedTime({ date }: { date: string | number }) {
   const relativeTime = useRelativeTime(date)
   return <>{relativeTime}</>
 }
@@ -226,7 +226,7 @@ function NewsListTimeLine({ items }: { items: NewsItem[] }) {
           <span className="flex items-center gap-1 text-neutral-400/50 ml--1px">
             <span className="">-</span>
             <span className="text-xs text-neutral-400/80">
-              {(item.pubDate || item.extra?.date) && <NewsUpdatedTime date={item.pubDate || item?.extra?.date} />}
+              {(item.pubDate || item?.extra?.date) && <NewsUpdatedTime date={(item.pubDate || item?.extra?.date)!} />}
             </span>
             <span className="text-xs text-neutral-400/80">
               <ExtraInfo item={item} />

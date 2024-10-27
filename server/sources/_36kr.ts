@@ -13,14 +13,14 @@ const quick = defineSource(async () => {
     const $a = $el.find("a.item-title")
     const url = $a.attr("href")
     const title = $a.text()
-    const relativeDate = $el.find(".time")
+    const relativeDate = $el.find(".time").text()
     if (url && title && relativeDate) {
       news.push({
         url: `${baseURL}${url}`,
         title,
         id: url,
         extra: {
-          date: parseRelativeDate(relativeDate.text()),
+          date: parseRelativeDate(relativeDate, "Asia/Shanghai").valueOf(),
         },
       })
     }

@@ -19,12 +19,10 @@ export default defineSource(async () => {
           url,
           title,
           id: url,
-          extra: {
-            date: tranformToUTC(date),
-          },
+          pubDate: parseRelativeDate(date, "Asia/Shanghai").valueOf(),
         })
       }
     }
   })
-  return news.sort((m, n) => n.extra!.date > m.extra!.date ? 1 : -1)
+  return news.sort((m, n) => n.pubDate! > m.pubDate! ? 1 : -1)
 })

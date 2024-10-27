@@ -33,7 +33,7 @@ export default defineSource(async () => {
     .map((k) => {
       const keyword = k.word_scheme ? k.word_scheme : `#${k.word}#`
       return {
-        id: k.num,
+        id: k.word,
         title: k.word,
         extra: {
           icon: k.icon && {
