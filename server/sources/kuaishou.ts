@@ -42,7 +42,7 @@ export default defineSource(async () => {
   // 获取热榜列表数据
   const hotRankData = data.defaultClient[hotRankId] as HotRankData
   // 转换数据格式
-  return hotRankData.items.map((item) => {
+  return hotRankData.items.filter(k => data.defaultClient[k.id].tagType !== "置顶").map((item) => {
     // 从id中提取实际的热搜词
     const hotSearchWord = item.id.replace("VisionHotRankItem:", "")
 

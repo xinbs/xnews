@@ -254,7 +254,7 @@ export const originSources = {
     column: "china",
     color: "orange",
     // cloudflare pages cannot access
-    // disable: true,
+    disable: true,
     home: "https://www.kuaishou.com",
   },
   "kaopu": {
@@ -271,6 +271,13 @@ export const originSources = {
     color: "blue",
     type: "realtime",
     home: "https://www.jin10.com",
+  },
+  "baidu": {
+    name: "百度热搜",
+    column: "china",
+    color: "blue",
+    type: "hottest",
+    home: "https://www.baidu.com",
   },
 } as const satisfies Record<string, OriginSource>
 
