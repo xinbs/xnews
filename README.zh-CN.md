@@ -1,7 +1,8 @@
 # NewsNow
 
-![](screenshots/preview.light.png#gh-light-mode-only)
-![](screenshots/preview.dark.png#gh-dark-mode-only)
+![](screenshots/preview-1.png)
+
+![](screenshots/preview-2.png)
 
 [English](./README.md) | 简体中文
 
