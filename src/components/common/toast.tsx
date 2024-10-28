@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useAtomValue, useSetAtom } from "jotai"
 import { useCallback, useMemo, useRef } from "react"
 import { useHoverDirty, useMount, useUpdateEffect, useWindowSize } from "react-use"
-import { toastAtom } from "~/atoms"
 import type { ToastItem } from "~/atoms/types"
+import { toastAtom } from "~/hooks/useToast"
 import { Timer } from "~/utils"
 
 const WIDTH = 320

@@ -9,9 +9,10 @@ import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
 import { ofetch } from "ofetch"
 import { useWindowSize } from "react-use"
 import { OverlayScrollbar } from "../common/overlay-scrollbar"
-import { focusSourcesAtom, refetchSourcesAtom } from "~/atoms"
+import { refetchSourcesAtom } from "~/atoms"
 import { useRelativeTime } from "~/hooks/useRelativeTime"
 import { safeParseString } from "~/utils"
+import { useFocusWith } from "~/hooks/useFocus"
 
 export interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
   id: SourceID
@@ -56,7 +57,6 @@ export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragg
 
 const prevSourceItems: Partial<Record<SourceID, NewsItem[]>> = {}
 function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
-  const [focusSources, setFocusSources] = useAtom(focusSourcesAtom)
   const [refetchSource, setRefetchSource] = useAtom(refetchSourcesAtom)
   const { data, isFetching, isPlaceholderData, isError } = useQuery({
     queryKey: [id, refetchSource[id]],
@@ -92,16 +92,15 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
     },
     // refetch 时显示原有的数据
     placeholderData: (prev) => {
-      if (prev?.items && sources[id].type === "hottest") prevSourceItems[id] = prev.items
-      return prev
+      if (prev?.id === id) {
+        if (prev?.items && sources[id].type === "hottest") prevSourceItems[id] = prev.items
+        return prev
+      }
     },
     staleTime: 1000 * 60 * 5,
     enabled: inView,
   })
 
-  const addFocusList = useCallback(() => {
-    setFocusSources(focusSources.includes(id) ? focusSources.filter(i => i !== id) : [...focusSources, id])
-  }, [setFocusSources, focusSources, id])
   const manualRefetch = useCallback(() => {
     setRefetchSource(prev => ({
       ...prev,
@@ -111,12 +110,15 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
 
   const isFreshFetching = useMemo(() => isFetching && !isPlaceholderData, [isFetching, isPlaceholderData])
 
+  const { isFocused, toggleFocus } = useFocusWith(id)
+
   return (
     <>
       <div className={clsx("flex justify-between mx-2 mt-0 mb-2 items-center")}>
         <div className="flex gap-2 items-center">
           <a
             className={clsx("w-8 h-8 rounded-full bg-cover hover:animate-spin")}
+            target="_blank"
             href={sources[id].home}
             title={sources[id].desc}
             style={{
@@ -144,14 +146,16 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
           />
           <button
             type="button"
-            className={clsx("btn", focusSources.includes(id) ? "i-ph:star-fill" : "i-ph:star-duotone")}
-            onClick={addFocusList}
+            className={clsx("btn", isFocused ? "i-ph:star-fill" : "i-ph:star-duotone")}
+            onClick={toggleFocus}
           />
-          <button
-            {...handleListeners}
-            type="button"
-            className={clsx("btn", "i-ph:dots-six-vertical-duotone", "cursor-grab")}
-          />
+          {handleListeners && (
+            <button
+              {...handleListeners}
+              type="button"
+              className={clsx("btn", "i-ph:dots-six-vertical-duotone", "cursor-grab")}
+            />
+          )}
         </div>
       </div>
 

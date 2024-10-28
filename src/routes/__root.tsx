@@ -12,6 +12,7 @@ import { useSync } from "~/hooks/useSync"
 import { Footer } from "~/components/footer"
 import { Toast } from "~/components/common/toast"
 import { usePWA } from "~/hooks/usePWA"
+import { SearchBar } from "~/components/common/search-bar"
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -73,6 +74,7 @@ function RootComponent() {
         </footer>
       </GlobalOverlayScrollbar>
       <Toast />
+      <SearchBar />
       {import.meta.env.DEV && (
         <>
           <ReactQueryDevtools buttonPosition="bottom-left" />

@@ -30,6 +30,7 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
         if (now - cache.updated < interval) {
           return {
             status: "success",
+            id,
             updatedTime: now,
             items: cache.data,
           }
@@ -46,6 +47,7 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
           if (!latest || (!event.context.disabledLogin && !event.context.user)) {
             return {
               status: "cache",
+              id,
               updatedTime: cache.updated,
               items: cache.data,
             }
@@ -62,6 +64,7 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
     }
     return {
       status: "success",
+      id,
       updatedTime: now,
       items: data,
     }

@@ -1,8 +1,8 @@
 import { atom } from "jotai"
-import type { ColumnID, SourceID } from "@shared/types"
+import type { FixedColumnID, SourceID } from "@shared/types"
 import { sources } from "@shared/sources"
 import { primitiveMetadataAtom } from "./primitiveMetadataAtom"
-import type { ToastItem, Update } from "./types"
+import type { Update } from "./types"
 
 export { primitiveMetadataAtom, preprocessMetadata } from "./primitiveMetadataAtom"
 
@@ -35,7 +35,7 @@ function initRefetchSources() {
 
 export const refetchSourcesAtom = atom(initRefetchSources())
 
-export const currentColumnIDAtom = atom<ColumnID>("focus")
+export const currentColumnIDAtom = atom<FixedColumnID>("focus")
 
 export const currentSourcesAtom = atom((get) => {
   const id = get(currentColumnIDAtom)
@@ -56,5 +56,3 @@ export const goToTopAtom = atom({
   ok: false,
   fn: undefined as (() => void) | undefined,
 })
-
-export const toastAtom = atom<ToastItem[]>([])

@@ -1,10 +1,8 @@
 import { sources } from "./sources"
 import { typeSafeObjectEntries, typeSafeObjectFromEntries } from "./type.util"
-import type { ColumnID, Metadata, SourceID } from "./types"
+import type { ColumnID, HiddenColumnID, Metadata, SourceID } from "./types"
 
-export const columnIds = ["focus", "realtime", "hottest", "china", "world", "tech", "finance"] as const
-
-const columnName: Record<ColumnID, { zh: string }> = {
+export const columns = {
   china: {
     zh: "国内",
   },
@@ -26,9 +24,12 @@ const columnName: Record<ColumnID, { zh: string }> = {
   hottest: {
     zh: "最热",
   },
-}
+} as const
 
-export const metadata: Metadata = typeSafeObjectFromEntries(typeSafeObjectEntries(columnName).map(([k, v]) => {
+export const fixedColumnIds = ["focus", "hottest", "realtime"] as const satisfies Partial<ColumnID>[]
+export const hiddenColumns = Object.keys(sources).filter(id => !fixedColumnIds.includes(id as any)) as HiddenColumnID[]
+
+export const metadata: Metadata = typeSafeObjectFromEntries(typeSafeObjectEntries(columns).map(([k, v]) => {
   switch (k) {
     case "focus":
       return [k, {
