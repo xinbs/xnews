@@ -2,8 +2,10 @@ import type { AllSourceID } from "@shared/types"
 import defu from "defu"
 import type { RSSHubOption, RSSHubInfo as RSSHubResponse, SourceGetter, SourceOption } from "#/types"
 
-type X = SourceGetter | Partial<Record<AllSourceID, SourceGetter>>
-export function defineSource<T extends X>(source: T): T {
+type R = Partial<Record<AllSourceID, SourceGetter>>
+export function defineSource(source: SourceGetter): SourceGetter
+export function defineSource(source: R): R
+export function defineSource(source: SourceGetter | R): SourceGetter | R {
   return source
 }
 
