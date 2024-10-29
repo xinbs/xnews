@@ -1,9 +1,8 @@
-import process from "node:process"
 import { TTL } from "@shared/consts"
 import type { SourceID, SourceResponse } from "@shared/types"
 import { sources } from "@shared/sources"
 import { getters } from "#/getters"
-import { useCache } from "#/hooks/useCache"
+import { getCacheTable } from "#/database/cache"
 
 export default defineEventHandler(async (event): Promise<SourceResponse> => {
   try {
@@ -18,10 +17,9 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
       if (isValid(id)) throw new Error("Invalid source id")
     }
 
-    const cacheTable = useCache()
+    const cacheTable = await getCacheTable()
     const now = Date.now()
     if (cacheTable) {
-      if (process.env.INIT_TABLE !== "false") await cacheTable.init()
       const cache = await cacheTable.get(id)
       if (cache) {
         // interval 刷新间隔，对于缓存失效也要执行的。本质上表示本来内容更新就很慢，这个间隔内可能内容压根不会更新。
