@@ -2,7 +2,8 @@ import { ourongxing, react } from "@ourongxing/eslint-config"
 
 export default ourongxing({
   type: "app",
-  ignores: ["**/routeTree.gen.ts"],
+  // 貌似不能 ./ 开头，
+  ignores: ["src/routeTree.gen.ts", "imports.app.d.ts"],
 }).append(react({
   files: ["src/**"],
 }))

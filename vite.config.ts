@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react-swc"
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite"
 import unocss from "unocss/vite"
 import dotenv from "dotenv"
-import autoImport from "unplugin-auto-import/vite"
+import unimport from "unimport/unplugin"
 import nitro from "./nitro.config"
 import { projectDir } from "./shared/dir"
 import pwa from "./pwa.config"
@@ -30,17 +30,20 @@ export default defineConfig({
   },
   plugins: [
     TanStackRouterVite({
-      // error with unplugin-auto-import and vite-plugin-pwa
+      // error with auto import and vite-plugin-pwa
       // autoCodeSplitting: true,
     }),
-    autoImport({
+    unimport.vite({
       dirs: ["src/hooks", "shared", "src/utils", "src/atoms"],
-      imports: ["react", "jotai", "jotai/utils", {
-        clsx: [
-          ["default", "$"],
-        ],
+      presets: ["react", {
+        from: "jotai",
+        imports: ["atom", "useAtom", "useAtomValue", "useSetAtom"],
       }],
-      dts: "auto-imports.app.d.ts",
+      imports: [
+        { from: "clsx", name: "default", as: "$" },
+        { from: "jotai/utils", name: "atomWithStorage" },
+      ],
+      dts: "imports.app.d.ts",
     }),
     unocss(),
     react(),

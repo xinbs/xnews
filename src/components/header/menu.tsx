@@ -80,7 +80,7 @@ export function Menu() {
                   href="https://github.com/ourongxing/newsnow"
                 >
                   <img
-                    alt="GitHub forks badge"
+                    alt="GitHub stars badge"
                     src="https://img.shields.io/github/stars/ourongxing/newsnow?logo=github"
                   />
                 </a>

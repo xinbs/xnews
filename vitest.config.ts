@@ -1,12 +1,7 @@
 import { join } from "node:path"
 import { defineConfig } from "vitest/config"
-import autoImport from "unplugin-auto-import/vite"
-import { resolveModuleExportNames } from "mlly"
+import unimport from "unimport/unplugin"
 import { projectDir } from "./shared/dir"
-
-const h3Exports = await resolveModuleExportNames("h3", {
-  url: import.meta.url,
-})
 
 export default defineConfig({
   test: {
@@ -22,13 +17,16 @@ export default defineConfig({
   },
   plugins: [
     // https://github.com/unjs/nitro/blob/v2/src/core/config/resolvers/imports.ts
-    autoImport({
-      imports: [{
-        from: "h3",
-        imports: h3Exports.filter(n => !/^[A-Z]/.test(n) && n !== "use"),
-      }],
+    unimport.vite({
+      imports: [],
+      presets: [
+        {
+          package: "h3",
+          ignore: [/^[A-Z]/, r => r === "use"],
+        },
+      ],
       dirs: ["server/utils", "shared"],
-      dts: false,
+      // dts: false,
     }),
   ],
 })
