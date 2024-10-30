@@ -1,16 +1,11 @@
-import { Homepage } from "@shared/consts"
-import clsx from "clsx"
 import { motion } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
 import { useHoverDirty } from "react-use"
-import { useDark } from "~/hooks/useDark"
-import { useLogin } from "~/hooks/useLogin"
 
 function ThemeToggle() {
   const { isDark, toggleDark } = useDark()
   return (
     <li onClick={toggleDark}>
-      <span className={clsx("inline-block", isDark ? "i-ph-moon-stars-duotone" : "i-ph-sun-dim-duotone")} />
+      <span className={$("inline-block", isDark ? "i-ph-moon-stars-duotone" : "i-ph-sun-dim-duotone")} />
       <span>
         {isDark ? "黑暗模式" : "白天模式"}
       </span>
@@ -50,7 +45,7 @@ export function Menu() {
         <div className="absolute right-0 z-99 bg-transparent pt-8 top-0">
           <motion.div
             id="dropdown-menu"
-            className={clsx([
+            className={$([
               "w-200px",
               "bg-primary backdrop-blur-5 bg-op-70! rounded-lg shadow-xl",
             ])}

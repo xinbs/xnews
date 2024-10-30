@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useAtomValue } from "jotai"
 import { focusSourcesAtom } from "~/atoms"
 import { Column } from "~/components/column"
 

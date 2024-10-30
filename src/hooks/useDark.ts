@@ -1,7 +1,5 @@
 import { useMemo } from "react"
 import { useMedia, useUpdateEffect } from "react-use"
-import { atomWithStorage } from "jotai/utils"
-import { useAtom } from "jotai"
 
 export declare type ColorScheme = "dark" | "light" | "auto"
 

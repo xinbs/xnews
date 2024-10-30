@@ -1,7 +1,3 @@
-import { useAtomValue } from "jotai"
-import { atomWithStorage } from "jotai/utils"
-import { useCallback } from "react"
-
 const userAtom = atomWithStorage<{
   name?: string
   avatar?: string

@@ -1,5 +1,3 @@
-import { useCallback, useMemo } from "react"
-import { useAtom } from "jotai"
 import type { SourceID } from "@shared/types"
 import { focusSourcesAtom } from "~/atoms"
 

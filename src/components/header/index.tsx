@@ -1,14 +1,9 @@
 import { Link } from "@tanstack/react-router"
-import { useCallback } from "react"
-import { useAtomValue, useSetAtom } from "jotai"
 import { useIsFetching } from "@tanstack/react-query"
-import clsx from "clsx"
 import type { SourceID } from "@shared/types"
-import { Homepage, Version } from "@shared/consts"
 import { NavBar } from "../navbar"
 import { Menu } from "./menu"
 import { currentSourcesAtom, goToTopAtom, refetchSourcesAtom } from "~/atoms"
-import { useSearchBar } from "~/hooks/useSearch"
 
 export function Search() {
   const { toggle } = useSearchBar()
@@ -22,7 +17,7 @@ function GoTop() {
     <button
       type="button"
       title="Go To Top"
-      className={clsx("i-ph:arrow-fat-up-duotone", ok ? "op-50 btn" : "op-0")}
+      className={$("i-ph:arrow-fat-up-duotone", ok ? "op-50 btn" : "op-0")}
       onClick={goToTop}
     />
   )
@@ -49,7 +44,7 @@ function Refresh() {
     <button
       type="button"
       title="Refresh"
-      className={clsx("i-ph:arrow-counter-clockwise-duotone btn", isFetching && "animate-spin i-ph:circle-dashed-duotone")}
+      className={$("i-ph:arrow-counter-clockwise-duotone btn", isFetching && "animate-spin i-ph:circle-dashed-duotone")}
       onClick={refreshAll}
     />
   )

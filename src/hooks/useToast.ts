@@ -1,5 +1,3 @@
-import { atom, useSetAtom } from "jotai"
-import { useCallback } from "react"
 import type { ToastItem } from "~/atoms/types"
 
 export const toastAtom = atom<ToastItem[]>([])

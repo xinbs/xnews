@@ -1,9 +1,7 @@
 import type { UseOverlayScrollbarsParams } from "overlayscrollbars-react"
 import { useOverlayScrollbars } from "overlayscrollbars-react"
 import type { HTMLProps, PropsWithChildren } from "react"
-import { useCallback, useMemo, useRef } from "react"
 import { defu } from "defu"
-import { useSetAtom } from "jotai"
 import { useMount } from "react-use"
 import { goToTopAtom } from "~/atoms"
 

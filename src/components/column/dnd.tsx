@@ -14,12 +14,9 @@ import {
 } from "@dnd-kit/core"
 import type { AnimateLayoutChanges } from "@dnd-kit/sortable"
 import { SortableContext, arrayMove, defaultAnimateLayoutChanges, rectSortingStrategy, useSortable } from "@dnd-kit/sortable"
-import { useAtom } from "jotai"
 import type { SourceID } from "@shared/types"
 import { CSS } from "@dnd-kit/utilities"
 import { motion } from "framer-motion"
-import { sources } from "@shared/sources"
-import clsx from "clsx"
 import type { ItemsProps } from "./card"
 import { CardWrapper } from "./card"
 import { currentSourcesAtom } from "~/atoms"
@@ -135,15 +132,15 @@ function DndWrapper({ items, setItems, children }: PropsWithChildren<DndProps>) 
 
 function CardOverlay({ id }: { id: SourceID }) {
   return (
-    <div className={clsx(
+    <div className={$(
       "flex flex-col rounded-2xl p-4 backdrop-blur-5",
       `bg-${sources[id].color}-500 dark:bg-${sources[id].color} bg-op-40!`,
     )}
     >
-      <div className={clsx("flex justify-between mx-2 items-center")}>
+      <div className={$("flex justify-between mx-2 items-center")}>
         <div className="flex gap-2 items-center">
           <div
-            className={clsx("w-8 h-8 rounded-full bg-cover")}
+            className={$("w-8 h-8 rounded-full bg-cover")}
             style={{
               backgroundImage: `url(/icons/${id.split("-")[0]}.png)`,
             }}
@@ -153,15 +150,15 @@ function CardOverlay({ id }: { id: SourceID }) {
               <span className="text-xl font-bold">
                 {sources[id].name}
               </span>
-              {sources[id]?.title && <span className={clsx("text-sm", `color-${sources[id].color} bg-base op-80 bg-op-50! px-1 rounded`)}>{sources[id].title}</span>}
+              {sources[id]?.title && <span className={$("text-sm", `color-${sources[id].color} bg-base op-80 bg-op-50! px-1 rounded`)}>{sources[id].title}</span>}
             </span>
             <span className="text-xs op-70">拖拽中</span>
           </span>
         </div>
-        <div className={clsx("flex gap-2 text-lg", `color-${sources[id].color}`)}>
+        <div className={$("flex gap-2 text-lg", `color-${sources[id].color}`)}>
           <button
             type="button"
-            className={clsx("i-ph:dots-six-vertical-duotone", "cursor-grabbing")}
+            className={$("i-ph:dots-six-vertical-duotone", "cursor-grabbing")}
           />
         </div>
       </div>

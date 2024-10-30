@@ -1,10 +1,7 @@
-import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
-import { useAtomValue, useSetAtom } from "jotai"
 import { useCallback, useMemo, useRef } from "react"
 import { useHoverDirty, useMount, useUpdateEffect, useWindowSize } from "react-use"
 import type { ToastItem } from "~/atoms/types"
-import { toastAtom } from "~/hooks/useToast"
 import { Timer } from "~/utils"
 
 const WIDTH = 320
@@ -91,11 +88,11 @@ function Item({ info }: { info: ToastItem }) {
           opacity: 1,
         },
       }}
-      className={clsx(
+      className={$(
         "bg-base rounded-lg shadow-xl relative",
       )}
     >
-      <div className={clsx(
+      <div className={$(
         `bg-${color}-500 dark:bg-${color} bg-op-40! p2 backdrop-blur-5 rounded-lg w-full`,
         "flex items-center gap-2",
       )}

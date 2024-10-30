@@ -1,6 +1,4 @@
-import { TTL } from "@shared/consts"
 import type { SourceID, SourceResponse } from "@shared/types"
-import { sources } from "@shared/sources"
 import { getters } from "#/getters"
 import { getCacheTable } from "#/database/cache"
 
