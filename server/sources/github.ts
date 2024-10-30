@@ -3,7 +3,7 @@ import type { NewsItem } from "@shared/types"
 
 const trending = defineSource(async () => {
   const baseURL = "https://github.com"
-  const html: any = await $fetch("https://github.com/trending?spoken_language_code=")
+  const html: any = await myFetch("https://github.com/trending?spoken_language_code=")
   const $ = cheerio.load(html)
   const $main = $("main .Box div[data-hpc] > article")
   const news: NewsItem[] = []

@@ -33,7 +33,7 @@ interface HotRes {
 const live = defineSource(async () => {
   const apiUrl = `https://api-one.wallstcn.com/apiv1/content/lives?channel=global-channel&limit=30`
 
-  const res: LiveRes = await $fetch(apiUrl)
+  const res: LiveRes = await myFetch(apiUrl)
   return res.data.items
     .map((k) => {
       return {
@@ -50,7 +50,7 @@ const live = defineSource(async () => {
 const news = defineSource(async () => {
   const apiUrl = `https://api-one.wallstcn.com/apiv1/content/information-flow?channel=global-channel&accept=article&limit=30`
 
-  const res: NewsRes = await $fetch(apiUrl)
+  const res: NewsRes = await myFetch(apiUrl)
   return res.data.items
     .filter(k => k.resource_type !== "ad" && k.resource.type !== "live" && k.resource.uri)
     .map(({ resource: h }) => {
@@ -68,7 +68,7 @@ const news = defineSource(async () => {
 const hot = defineSource(async () => {
   const apiUrl = `https://api-one.wallstcn.com/apiv1/content/articles/hot?period=all`
 
-  const res: HotRes = await $fetch(apiUrl)
+  const res: HotRes = await myFetch(apiUrl)
   return res.data.day_items
     .map((h) => {
       return {

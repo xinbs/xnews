@@ -4,7 +4,7 @@ import { load } from "cheerio"
 const quick = defineSource(async () => {
   const baseURL = "https://www.36kr.com"
   const url = `${baseURL}/newsflashes`
-  const response = await $fetch(url) as any
+  const response = await myFetch(url) as any
   const $ = load(response)
   const news: NewsItem[] = []
   const $items = $(".newsflash-item")

@@ -35,7 +35,7 @@ export function defineRSSHubSource(route: string, RSSHubOptions?: RSSHubOption, 
     Object.entries(RSSHubOptions).forEach(([key, value]) => {
       url.searchParams.set(key, value.toString())
     })
-    const data: RSSHubResponse = await $fetch(url)
+    const data: RSSHubResponse = await myFetch(url)
     return data.items.map(item => ({
       title: item.title,
       url: item.url,

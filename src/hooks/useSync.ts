@@ -1,5 +1,4 @@
 import type { PrimitiveMetadata } from "@shared/types"
-import { ofetch } from "ofetch"
 import { useDebounce, useMount } from "react-use"
 import { useLogin } from "./useLogin"
 import { useToast } from "./useToast"
@@ -8,7 +7,7 @@ import { safeParseString } from "~/utils"
 async function uploadMetadata(metadata: PrimitiveMetadata) {
   const jwt = safeParseString(localStorage.getItem("jwt"))
   if (!jwt) return
-  await ofetch("/api/me/sync", {
+  await myFetch("/api/me/sync", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -23,7 +22,7 @@ async function uploadMetadata(metadata: PrimitiveMetadata) {
 async function downloadMetadata(): Promise<PrimitiveMetadata | undefined> {
   const jwt = safeParseString(localStorage.getItem("jwt"))
   if (!jwt) return
-  const { data, updatedTime } = await ofetch("/api/me/sync", {
+  const { data, updatedTime } = await myFetch("/api/me/sync", {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },

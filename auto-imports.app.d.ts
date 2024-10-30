@@ -39,6 +39,7 @@ declare global {
   const loadable: typeof import('jotai/utils')['loadable']
   const memo: typeof import('react')['memo']
   const metadata: typeof import('./shared/metadata')['metadata']
+  const myFetch: typeof import('./src/utils/index')['myFetch']
   const originSources: typeof import('./shared/sources')['originSources']
   const preprocessMetadata: typeof import('./src/atoms/primitiveMetadataAtom')['preprocessMetadata']
   const primitiveMetadataAtom: typeof import('./src/atoms/primitiveMetadataAtom')['primitiveMetadataAtom']

@@ -1,6 +1,7 @@
 import type { SourceID, SourceResponse } from "@shared/types"
 import { getters } from "#/getters"
 import { getCacheTable } from "#/database/cache"
+import type { CacheInfo } from "#/types"
 
 export default defineEventHandler(async (event): Promise<SourceResponse> => {
   try {
@@ -17,8 +18,9 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
 
     const cacheTable = await getCacheTable()
     const now = Date.now()
+    let cache: CacheInfo
     if (cacheTable) {
-      const cache = await cacheTable.get(id)
+      cache = await cacheTable.get(id)
       if (cache) {
         // interval 刷新间隔，对于缓存失效也要执行的。本质上表示本来内容更新就很慢，这个间隔内可能内容压根不会更新。
         // 默认 10 分钟，是低于 TTL 的，但部分 Source 的更新间隔会超过 TTL，甚至有的一天更新一次。
@@ -52,17 +54,30 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
       }
     }
 
-    const data = (await getters[id]()).slice(0, 30)
-    logger.success(`fetch ${id} latest`)
-    if (cacheTable) {
-      if (event.context.waitUntil) event.context.waitUntil(cacheTable.set(id, data))
-      else await cacheTable.set(id, data)
-    }
-    return {
-      status: "success",
-      id,
-      updatedTime: now,
-      items: data,
+    try {
+      const newData = (await getters[id]()).slice(0, 30)
+      if (cacheTable && newData) {
+        if (event.context.waitUntil) event.context.waitUntil(cacheTable.set(id, newData))
+        else await cacheTable.set(id, newData)
+      }
+      logger.success(`fetch ${id} latest`)
+      return {
+        status: "success",
+        id,
+        updatedTime: now,
+        items: newData,
+      }
+    } catch (e) {
+      if (cache!) {
+        return {
+          status: "cache",
+          id,
+          updatedTime: cache.updated,
+          items: cache.data,
+        }
+      } else {
+        throw e
+      }
     }
   } catch (e: any) {
     logger.error(e)

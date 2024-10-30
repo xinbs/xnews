@@ -3,7 +3,7 @@ import type { NewsItem } from "@shared/types"
 
 const express = defineSource(async () => {
   const baseURL = "https://www.fastbull.cn"
-  const html: any = await $fetch(`${baseURL}/express-news`)
+  const html: any = await myFetch(`${baseURL}/express-news`)
   const $ = cheerio.load(html)
   const $main = $(".news-list")
   const news: NewsItem[] = []
@@ -27,7 +27,7 @@ const express = defineSource(async () => {
 
 const news = defineSource(async () => {
   const baseURL = "https://www.fastbull.cn"
-  const html: any = await $fetch(`${baseURL}/news`)
+  const html: any = await myFetch(`${baseURL}/news`)
   const $ = cheerio.load(html)
   const $main = $(".trending_type")
   const news: NewsItem[] = []

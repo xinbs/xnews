@@ -14,7 +14,7 @@ interface Res {
 
 export default defineSource(async () => {
   const url = "https://tieba.baidu.com/hottopic/browse/topicList"
-  const res: Res = await $fetch(url)
+  const res: Res = await myFetch(url)
   return res.data.bang_topic.topic_list
     .map((k) => {
       return {

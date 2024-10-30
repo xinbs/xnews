@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     access_token: string
     token_type: string
     scope: string
-  } = await $fetch(
+  } = await myFetch(
     `https://github.com/login/oauth/access_token`,
     {
       method: "POST",
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     avatar_url: string
     email: string
     notification_email: string
-  } = await $fetch(`https://api.github.com/user`, {
+  } = await myFetch(`https://api.github.com/user`, {
     headers: {
       "Accept": "application/vnd.github+json",
       "Authorization": `token ${response.access_token}`,

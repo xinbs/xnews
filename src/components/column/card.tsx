@@ -2,7 +2,6 @@ import type { NewsItem, SourceID, SourceResponse } from "@shared/types"
 import { useQuery } from "@tanstack/react-query"
 import { AnimatePresence, motion, useInView } from "framer-motion"
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
-import { ofetch } from "ofetch"
 import { useWindowSize } from "react-use"
 import { OverlayScrollbar } from "../common/overlay-scrollbar"
 import { refetchSourcesAtom } from "~/atoms"
@@ -63,8 +62,7 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
         const jwt = safeParseString(localStorage.getItem("jwt"))
         if (jwt) headers.Authorization = `Bearer ${jwt}`
       }
-      const response: SourceResponse = await ofetch(url, {
-        timeout: 10000,
+      const response: SourceResponse = await myFetch(url, {
         headers,
       })
 
@@ -91,6 +89,7 @@ function NewsCard({ id, inView, handleListeners }: NewsCardProps) {
         return prev
       }
     },
+    retry: false,
     staleTime: 1000 * 60 * 5,
     enabled: inView,
   })

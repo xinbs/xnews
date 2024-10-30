@@ -10,7 +10,7 @@ interface Res {
 
 export default defineSource(async () => {
   const url = "https://cache.thepaper.cn/contentapi/wwwIndex/rightSidebar"
-  const res: Res = await $fetch(url)
+  const res: Res = await myFetch(url)
   return res.data.hotNews
     .map((k) => {
       return {

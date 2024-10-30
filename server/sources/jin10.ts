@@ -23,7 +23,7 @@ export default defineSource(async () => {
   const timestamp = Date.now()
   const url = `https://www.jin10.com/flash_newest.js?t=${timestamp}`
 
-  const rawData: string = await $fetch(url)
+  const rawData: string = await myFetch(url)
 
   const jsonStr = (rawData as string)
     .replace(/^var\s+newest\s*=\s*/, "") // 移除开头的变量声明

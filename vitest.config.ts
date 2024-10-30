@@ -26,9 +26,6 @@ export default defineConfig({
       imports: [{
         from: "h3",
         imports: h3Exports.filter(n => !/^[A-Z]/.test(n) && n !== "use"),
-      }, {
-        from: "ofetch",
-        imports: ["$fetch", "ofetch"],
       }],
       dirs: ["server/utils", "shared"],
       dts: false,

@@ -3,7 +3,7 @@ import type { NewsItem } from "@shared/types"
 
 export default defineSource(async () => {
   const baseURL = "https://www.solidot.org"
-  const html: any = await $fetch(baseURL)
+  const html: any = await myFetch(baseURL)
   const $ = cheerio.load(html)
   const $main = $(".block_m")
   const news: NewsItem[] = []
