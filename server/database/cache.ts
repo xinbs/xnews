@@ -49,7 +49,6 @@ export async function getCacheTable() {
   try {
     // 如果没有数据库，这里不会报错，只会在第一次访问的时候报错
     const db = useDatabase()
-    if (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== "main") return
     if (process.env.NODE_ENV && process.env.NODE_ENV !== "production") return
     const cacheTable = new Cache(db)
     if (process.env.INIT_TABLE !== "false") await cacheTable.init()
