@@ -6,6 +6,9 @@ interface Res {
     Image: {
       url: string
     }
+    LabelUri?: {
+      url: string
+    }
   }[]
 }
 
@@ -18,6 +21,9 @@ export default defineSource(async () => {
         id: k.ClusterIdStr,
         title: k.Title,
         url: `https://www.toutiao.com/trending/${k.ClusterIdStr}/`,
+        extra: {
+          icon: k.LabelUri?.url && proxyPicture(k.LabelUri.url),
+        },
       }
     })
 })

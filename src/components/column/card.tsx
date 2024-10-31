@@ -217,7 +217,7 @@ function ExtraInfo({ item }: { item: NewsItem }) {
           transform: `scale(${scale ?? 1})`,
         }}
         className="h-4 inline mt--1"
-        onError={e => e.currentTarget.hidden = true}
+        onError={e => e.currentTarget.style.display = "none"}
       />
     )
   }

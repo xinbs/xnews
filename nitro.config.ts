@@ -31,6 +31,11 @@ if (process.env.VERCEL) {
   nitroOption.preset = "vercel-edge"
   // You can use other online database, do it yourself. For more info: https://db0.unjs.io/connectors
   nitroOption.database = undefined
+  // nitroOption.vercel = {
+  //   config: {
+  //     cache: []
+  //   },
+  // }
 } else if (process.env.CF_PAGES) {
   nitroOption.preset = "cloudflare-pages"
   nitroOption.database = {

@@ -12,3 +12,4 @@ services:
       - G_CLIENT_SECRET=
       - JWT_SECRET=
       - INIT_TABLE=true
+      - ENABLE_CACHE=true

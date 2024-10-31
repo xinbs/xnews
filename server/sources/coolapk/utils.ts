@@ -1,6 +1,4 @@
 // https://github.com/DIYgod/RSSHub/blob/master/lib/routes/coolapk/utils.ts
-import { Buffer } from "node:buffer"
-
 function getRandomDEVICE_ID() {
   const r = [10, 6, 6, 6, 14]
   const id = r.map(i => Math.random().toString(36).substring(2, i))
@@ -13,7 +11,7 @@ async function get_app_token() {
   const hex_now = `0x${now.toString(16)}`
   const md5_now = await md5(now.toString())
   const s = `token://com.coolapk.market/c67ef5943784d09750dcfbb31020f0ab?${md5_now}$${DEVICE_ID}&com.coolapk.market`
-  const md5_s = await md5(Buffer.from(s).toString("base64"))
+  const md5_s = await md5(encodeBase64(s))
   const token = md5_s + DEVICE_ID + hex_now
   return token
 }

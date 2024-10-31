@@ -37,7 +37,7 @@ export default defineSource(async () => {
         title: k.word,
         extra: {
           icon: k.icon && {
-            url: `/api/proxy?img=${encodeURIComponent(k.icon)}`,
+            url: proxyPicture(k.icon),
             scale: 1.5,
           },
         },
