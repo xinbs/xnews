@@ -5,12 +5,6 @@ import { NavBar } from "../navbar"
 import { Menu } from "./menu"
 import { currentSourcesAtom, goToTopAtom, refetchSourcesAtom } from "~/atoms"
 
-export function Search() {
-  const { toggle } = useSearchBar()
-  return (
-    <button type="button" className="i-ph:magnifying-glass-duotone btn" onClick={() => toggle()} />
-  )
-}
 function GoTop() {
   const { ok, fn: goToTop } = useAtomValue(goToTopAtom)
   return (
@@ -76,7 +70,6 @@ export function Header() {
       <span className="justify-self-end flex gap-2 items-center text-xl text-primary-600 dark:text-primary">
         <GoTop />
         <Refresh />
-        <Search />
         <Menu />
       </span>
     </>
