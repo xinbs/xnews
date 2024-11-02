@@ -17,12 +17,34 @@ import { SortableContext, arrayMove, defaultAnimateLayoutChanges, rectSortingStr
 import type { SourceID } from "@shared/types"
 import { CSS } from "@dnd-kit/utilities"
 import { motion } from "framer-motion"
+import { useQuery } from "@tanstack/react-query"
 import type { ItemsProps } from "./card"
 import { CardWrapper } from "./card"
 import { currentSourcesAtom } from "~/atoms"
 
 export function Dnd() {
   const [items, setItems] = useAtom(currentSourcesAtom)
+  useQuery({
+    queryKey: ["entries", items.sort()],
+    queryFn: async ({ queryKey }) => {
+      const sources = queryKey[1]
+      const res: EntriesSourceResponse = await myFetch("/api/s/entries", {
+        method: "POST",
+        body: {
+          sources,
+        },
+      })
+      if (res) {
+        for (const [k, v] of Object.entries(res)) {
+          cache.set(k as SourceID, v)
+        }
+        return res
+      }
+      return null
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
   return (
     <DndWrapper items={items} setItems={setItems}>
       <motion.ol

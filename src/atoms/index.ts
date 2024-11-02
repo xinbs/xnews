@@ -15,21 +15,6 @@ export const focusSourcesAtom = atom((get) => {
   })
 })
 
-function initRefetchSources() {
-  let time = 0
-  // useOnReload
-  // 没有放在 useOnReload 里面, 可以避免初始化后再修改 refetchSourceAtom，导致多次请求 API
-  const _ = localStorage.getItem("quitTime")
-  const now = Date.now()
-  const quitTime = _ ? Number(_) : 0
-  if (!Number.isNaN(quitTime) && now - quitTime < 1000) {
-    time = now
-  }
-  return Object.fromEntries(Object.keys(sources).map(k => [k, time])) as Record<SourceID, number>
-}
-
-export const refetchSourcesAtom = atom(initRefetchSources())
-
 export const currentColumnIDAtom = atom<FixedColumnID>("focus")
 
 export const currentSourcesAtom = atom((get) => {

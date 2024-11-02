@@ -11,7 +11,7 @@ export type SourceID = {
   [Key in MainSourceID]: ConstSources[Key] extends { disable?: true } ? never :
     ConstSources[Key] extends { sub?: infer SubSource } ? {
     // @ts-expect-error >_<
-      [SubKey in keyof SubSource ]: SubSource[SubKey] extends { disable?: true } ? never : `${Key}-${SubKey}`
+      [SubKey in keyof SubSource]: SubSource[SubKey] extends { disable?: true } ? never : `${Key}-${SubKey}`
     }[keyof SubSource] | Key : Key;
 }[MainSourceID]
 
@@ -108,3 +108,5 @@ export interface SourceResponse {
   updatedTime: number | string
   items: NewsItem[]
 }
+
+export type EntriesSourceResponse = Partial<Record<SourceID, SourceResponse>>
