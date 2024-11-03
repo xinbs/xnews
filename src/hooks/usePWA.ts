@@ -16,9 +16,7 @@ export function usePWA() {
           label: "更新",
           onClick: () => updateServiceWorker(true),
         },
-        // onDismiss: () => {
-        //   setNeedRefresh(false)
-        // },
+        onDismiss: () => updateServiceWorker(true),
       })
     }
   }, [needRefresh, updateServiceWorker, setNeedRefresh, toaster])
