@@ -3,6 +3,7 @@ import { jwtVerify } from "jose"
 
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
+  if (!url.pathname.startsWith("/api")) return
   if (["JWT_SECRET", "G_CLIENT_ID", "G_CLIENT_SECRET"].find(k => !process.env[k])) {
     event.context.disabledLogin = true
     if (["/api/s", "/api/proxy"].every(p => !url.pathname.startsWith(p)))
