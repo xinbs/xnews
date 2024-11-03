@@ -20,13 +20,7 @@ export function useRefetch() {
   const toaster = useToast()
 
   const refresh = useCallback((...sources: SourceID[]) => {
-    if (loggedIn) {
-      const obj = Object.fromEntries(sources.map(id => [id, Date.now()]))
-      setRefetchSource(prev => ({
-        ...prev,
-        ...obj,
-      }))
-    } else if (enableLogin) {
+    if (enableLogin && !loggedIn) {
       toaster("登录后可以强制拉取最新数据", {
         type: "warning",
         action: {
@@ -34,6 +28,12 @@ export function useRefetch() {
           onClick: login,
         },
       })
+    } else {
+      const obj = Object.fromEntries(sources.map(id => [id, Date.now()]))
+      setRefetchSource(prev => ({
+        ...prev,
+        ...obj,
+      }))
     }
   }, [setRefetchSource, loggedIn, toaster, login, enableLogin])
 
