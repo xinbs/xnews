@@ -14,7 +14,7 @@ function ThemeToggle() {
 }
 
 export function Menu() {
-  const { loggedIn, login, logout, userInfo } = useLogin()
+  const { loggedIn, login, logout, userInfo, enableLogin } = useLogin()
   const [shown, show] = useState(false)
   const ref = useRef<HTMLElement>(null)
   const isHover = useHoverDirty(ref)
@@ -25,7 +25,7 @@ export function Menu() {
     <span ref={ref} className="relative">
       <span className="flex items-center scale-90">
         {
-          loggedIn && userInfo.avatar
+          enableLogin && loggedIn && userInfo.avatar
             ? (
                 <button
                   type="button"
@@ -57,7 +57,7 @@ export function Menu() {
             }}
           >
             <ol className="bg-base bg-op-70! backdrop-blur-md p-2 rounded-lg color-base text-base">
-              {loggedIn
+              {enableLogin && (loggedIn
                 ? (
                     <li onClick={logout}>
                       <span className="i-ph:sign-out-duotone inline-block" />
@@ -69,7 +69,7 @@ export function Menu() {
                       <span className="i-ph:sign-in-duotone inline-block" />
                       <span>Github 账号登录</span>
                     </li>
-                  )}
+                  ))}
               <ThemeToggle />
               <li onClick={() => window.open(Homepage)}>
                 <span className="i-ph:github-logo-duotone inline-block" />

@@ -1,4 +1,3 @@
-import process from "node:process"
 import { join } from "node:path"
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
@@ -15,13 +14,6 @@ dotenv.config({
 })
 
 export default defineConfig({
-  define: {
-    __LOGIN_URL__: process.env.G_CLIENT_ID ? `"https://github.com/login/oauth/authorize?client_id=${process.env.G_CLIENT_ID}"` : `"/api/login"`,
-  },
-  build: {
-    sourcemap: true,
-    minify: false,
-  },
   resolve: {
     alias: {
       "~": join(projectDir, "src"),

@@ -53,10 +53,10 @@ function NewsCard({ id, handleListeners }: NewsCardProps) {
     queryKey: [id, getRefreshId(id)],
     queryFn: async ({ queryKey }) => {
       const [_id, _refetchTime] = queryKey as [SourceID, number]
-      let url = `/api/s?id=${_id}`
+      let url = `/s?id=${_id}`
       const headers: Record<string, any> = {}
       if (Date.now() - _refetchTime < 1000) {
-        url = `/api/s?id=${_id}&latest`
+        url = `/s?id=${_id}&latest`
         const jwt = safeParseString(localStorage.getItem("jwt"))
         if (jwt) headers.Authorization = `Bearer ${jwt}`
       } else if (cache.has(_id)) {

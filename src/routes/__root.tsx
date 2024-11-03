@@ -15,14 +15,6 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
-  beforeLoad: () => {
-    const query = new URLSearchParams(window.location.search)
-    if (query.has("login") && query.has("user") && query.has("jwt")) {
-      localStorage.setItem("user", query.get("user")!)
-      localStorage.setItem("jwt", JSON.stringify(query.get("jwt")!))
-      window.history.replaceState({}, document.title, window.location.pathname)
-    }
-  },
 })
 
 function NotFoundComponent() {

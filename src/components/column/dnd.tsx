@@ -25,10 +25,11 @@ import { currentSourcesAtom } from "~/atoms"
 export function Dnd() {
   const [items, setItems] = useAtom(currentSourcesAtom)
   useQuery({
-    queryKey: ["entries", items.sort()],
+    // sort in place
+    queryKey: ["entries", [...items].sort()],
     queryFn: async ({ queryKey }) => {
       const sources = queryKey[1]
-      const res: EntriesSourceResponse = await myFetch("/api/s/entries", {
+      const res: EntriesSourceResponse = await myFetch("/s/entries", {
         method: "POST",
         body: {
           sources,

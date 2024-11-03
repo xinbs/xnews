@@ -16,14 +16,26 @@ function initRefetchSources() {
 const refetchSourcesAtom = atom(initRefetchSources())
 export function useRefetch() {
   const [refetchSource, setRefetchSource] = useAtom(refetchSourcesAtom)
+  const { enableLogin, loggedIn, login } = useLogin()
+  const toaster = useToast()
 
   const refresh = useCallback((...sources: SourceID[]) => {
-    const obj = Object.fromEntries(sources.map(id => [id, Date.now()]))
-    setRefetchSource(prev => ({
-      ...prev,
-      ...obj,
-    }))
-  }, [setRefetchSource])
+    if (loggedIn) {
+      const obj = Object.fromEntries(sources.map(id => [id, Date.now()]))
+      setRefetchSource(prev => ({
+        ...prev,
+        ...obj,
+      }))
+    } else if (enableLogin) {
+      toaster("登录后可以强制拉取最新数据", {
+        type: "warning",
+        action: {
+          label: "登录",
+          onClick: login,
+        },
+      })
+    }
+  }, [setRefetchSource, loggedIn, toaster, login, enableLogin])
 
   const getRefreshId = useCallback((id: SourceID) => refetchSource[id], [refetchSource])
 
