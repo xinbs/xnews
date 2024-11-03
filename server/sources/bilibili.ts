@@ -43,7 +43,7 @@ const hotSearch = defineSource(async () => {
     title: k.show_name,
     url: `https://search.bilibili.com/all?keyword=${encodeURIComponent(k.keyword)}`,
     extra: {
-      icon: k.icon && `/api/proxy?img=${encodeURIComponent(k.icon)}`,
+      icon: k.icon && proxyPicture(k.icon),
     },
   }))
 })
