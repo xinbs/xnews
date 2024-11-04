@@ -108,5 +108,3 @@ export interface SourceResponse {
   updatedTime: number | string
   items: NewsItem[]
 }
-
-export type EntriesSourceResponse = Partial<Record<SourceID, SourceResponse>>

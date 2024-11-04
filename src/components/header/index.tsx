@@ -24,7 +24,8 @@ function Refresh() {
 
   const isFetching = useIsFetching({
     predicate: (query) => {
-      return currentSources.includes(query.queryKey[0] as SourceID)
+      const [type, id] = query.queryKey as ["source" | "entire", SourceID]
+      return (type === "source" && currentSources.includes(id)) || type === "entire"
     },
   })
 

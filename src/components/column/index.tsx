@@ -11,6 +11,7 @@ export function Column({ id }: { id: FixedColumnID }) {
   }, [id, setCurrentColumnID])
 
   useTitle(`NewsNow | ${metadata[id].name}`)
+
   return (
     <>
       <div className="flex justify-center md:hidden mb-6">

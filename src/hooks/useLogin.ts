@@ -18,7 +18,7 @@ enableLoginAtom.onMount = (set) => {
   }).catch((e) => {
     if (e.statusCode === 506) {
       set({ enable: false })
-      console.log("clear")
+      localStorage.removeItem("jwt")
     }
   })
 }

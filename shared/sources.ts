@@ -160,6 +160,8 @@ export const originSources = {
       },
       depth: {
         title: "深度头条",
+        // invalid, not way to get
+        disable: true,
         interval: Time.Common,
       },
     },
