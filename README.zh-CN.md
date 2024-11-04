@@ -8,6 +8,11 @@
 
 ***优雅地阅读实时热门新闻***
 
+## 特性
+- 优雅的设计，优雅的阅读体验，时刻关注最新最热的新闻。
+- 支持 Github 登录，支持数据同步。
+- 默认 30 分钟缓存，登录用户可以强制拉取最新数据。但也会根据内容源的更新间隔设置不同的爬虫间隔时间（最快两分钟），节约资源的同时避免频繁爬取而导致 IP 封禁。
+
 ## 部署
 
 如果不需要登录，缓存，可以直接部署到 Cloudflare Pages，Vercel 等。Fork 之后在对应平台上导入即可。
@@ -27,18 +32,13 @@ G_CLIENT_SECRET=
 JWT_SECRET=
 # 初始化数据库, 首次运行必须设置为 true，之后可以将其关闭
 INIT_TABLE=true
+# 是否启用缓存
+ENABLE_CACHE=true
 ```
 
 本项目主推 Cloudflare Pages 以及 Docker 部署， Vercel 需要你自行搞定数据库，其他支持的数据库可以查看 https://db0.unjs.io/connectors 。
 
-Cloudflare D1 数据库可以免费使用，在 Cloudflare Worker 控制面板里找到 D1 手动创建数据库，将 `database_id` 以及 `database_name` 填入 `wrangler.toml` 对应位置即可。没有 `wrangler.toml` 文件，可以把 `example.wrangler.toml` 重命名为 `wrangler.toml`, 将其修改为自己的配置，下次部署时就可以生效了。如果部署时，提示数据库里为空，可以随意创建一个表，第一次执行会自动初始化所需的表，也可以用下列语句创建 Cache Table
-```sql
-  CREATE TABLE IF NOT EXISTS cache (
-    id TEXT PRIMARY KEY,
-    updated INTEGER,
-    data TEXT
-  );
-```
+Cloudflare D1 数据库可以免费使用，在 Cloudflare Worker 控制面板里找到 D1 手动创建数据库，将 `database_id` 以及 `database_name` 填入 `wrangler.toml` 对应位置即可。没有 `wrangler.toml` 文件，可以把 `example.wrangler.toml` 重命名为 `wrangler.toml`, 将其修改为自己的配置，下次部署时就可以生效了。
 
 对于 Docker 部署，只需要项目根目录 `docker-compose.yaml` 文件，同一目录下执行
 ```
@@ -55,7 +55,7 @@ pnpm i
 pnpm dev
 ```
 
-你可能想要添加数据源，请关注 `shared/metadata` `shared/sources` `server/sources`，项目类型完备，结构简单，请自行探索。
+你可能想要添加数据源，请关注 `shared/sources` `server/sources`，项目类型完备，结构简单，请自行探索。
 
 ## License
 

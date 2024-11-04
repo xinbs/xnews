@@ -7,6 +7,11 @@ English | [简体中文](README.zh-CN.md)
 
 ***Elegant reading of real-time and hottest news***
 
+## Features
+- Elegant design for a pleasant reading experience, keeping you up-to-date with the latest and hottest news.
+- Supports Github login and data synchronization.
+- Default cache duration is 30 minutes. Logged-in users can force fetch the latest data. However, the scraping interval is adjusted based on the update frequency of the content sources (as fast as every two minutes) to save resources and prevent frequent scraping that could lead to IP bans.
+
 ## Deployment
 
 If login and caching are not required, you can directly deploy to platforms like Cloudflare Pages or Vercel. Just fork the repository and import it into the respective platform.
@@ -26,6 +31,8 @@ G_CLIENT_SECRET=
 JWT_SECRET=
 # Initialize database, must be set to true on first run, can be turned off afterward
 INIT_TABLE=true
+# Whether to enable cache
+ENABLE_CACHE=true
 ```
 
 This project primarily supports deployment on Cloudflare Pages and Docker. For Vercel, you need to set up your own database. Supported databases can be found at https://db0.unjs.io/connectors .
@@ -33,16 +40,6 @@ This project primarily supports deployment on Cloudflare Pages and Docker. For V
 The Cloudflare D1 database can be used for free. To set it up, go to the Cloudflare Worker control panel and manually create a D1 database. Then, add the `database_id` and `database_name` to the corresponding fields in your `wrangler.toml` file.
 
 If you don't have a `wrangler.toml` file, you can rename `example.wrangler.toml` to `wrangler.toml` and modify it with your configuration. The changes will take effect on your next deployment.
-
-If you receive an error indicating that the database is empty during deployment, you can create a table arbitrarily. The first execution will automatically initialize the required tables. Alternatively, you can use the following SQL statement to create a Cache Table:
-
-```sql
-  CREATE TABLE IF NOT EXISTS cache (
-    id TEXT PRIMARY KEY,
-    updated INTEGER,
-    data TEXT
-  );
-```
 
 For Docker deployment. In the project root directory with `docker-compose.yml`, run
 
@@ -61,7 +58,7 @@ pnpm i
 pnpm dev
 ```
 
-If you want to add data sources, refer to the `shared/metadata`, `shared/sources`, and `server/sources` directories. The project has complete types and a simple structure; feel free to explore.
+If you want to add data sources, refer to the `shared/sources`, and `server/sources` directories. The project has complete types and a simple structure; feel free to explore.
 
 ## License
 
