@@ -1,7 +1,6 @@
 import type { NewsItem, SourceID, SourceResponse } from "@shared/types"
 import { useQuery } from "@tanstack/react-query"
 import { AnimatePresence, motion, useInView } from "framer-motion"
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
 import { useWindowSize } from "react-use"
 import { forwardRef, useImperativeHandle } from "react"
 import { OverlayScrollbar } from "../common/overlay-scrollbar"
@@ -12,23 +11,23 @@ export interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * 是否显示透明度，拖动时原卡片的样式
    */
-  isDragged?: boolean
-  handleListeners?: SyntheticListenerMap
+  isDragging?: boolean
+  setHandleRef?: (ref: HTMLElement | null) => void
 }
 
 interface NewsCardProps {
   id: SourceID
-  handleListeners?: SyntheticListenerMap
+  setHandleRef?: (ref: HTMLElement | null) => void
 }
 
-export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragged, handleListeners, style, ...props }, dndRef) => {
+export const CardWrapper = forwardRef<HTMLElement, ItemsProps>(({ id, isDragging, setHandleRef, style, ...props }, dndRef) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const inView = useInView(ref, {
     once: true,
   })
 
-  useImperativeHandle(dndRef, () => ref.current!)
+  useImperativeHandle(dndRef, () => ref.current! as HTMLDivElement)
 
   return (
     <div
@@ -36,7 +35,7 @@ export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragg
       className={$(
         "flex flex-col h-500px rounded-2xl p-4 cursor-default",
         "backdrop-blur-5 transition-opacity-300",
-        isDragged && "op-50",
+        isDragging && "op-50",
         `bg-${sources[id].color}-500 dark:bg-${sources[id].color} bg-op-40!`,
       )}
       style={{
@@ -45,12 +44,12 @@ export const CardWrapper = forwardRef<HTMLDivElement, ItemsProps>(({ id, isDragg
       }}
       {...props}
     >
-      {inView && <NewsCard id={id} handleListeners={handleListeners} />}
+      {inView && <NewsCard id={id} setHandleRef={setHandleRef} />}
     </div>
   )
 })
 
-function NewsCard({ id, handleListeners }: NewsCardProps) {
+function NewsCard({ id, setHandleRef }: NewsCardProps) {
   const { refresh } = useRefetch()
   const { data, isFetching, isError } = useQuery({
     queryKey: ["source", id],
@@ -141,9 +140,9 @@ function NewsCard({ id, handleListeners }: NewsCardProps) {
             className={$("btn", isFocused ? "i-ph:star-fill" : "i-ph:star-duotone")}
             onClick={toggleFocus}
           />
-          {handleListeners && (
+          {setHandleRef && (
             <button
-              {...handleListeners}
+              ref={setHandleRef}
               type="button"
               className={$("btn", "i-ph:dots-six-vertical-duotone", "cursor-grab")}
             />
