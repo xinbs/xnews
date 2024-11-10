@@ -1,11 +1,12 @@
 import type { PropsWithChildren } from "react"
 import type { SourceID } from "@shared/types"
-import { motion } from "framer-motion"
 import type { BaseEventPayload, ElementDragType } from "@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types"
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge"
 import { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge"
 import { createPortal } from "react-dom"
 import { useThrottleFn } from "ahooks"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { motion } from "framer-motion"
 import { DndContext } from "../common/dnd"
 import { useSortable } from "../common/dnd/useSortable"
 import type { ItemsProps } from "./card"
@@ -15,12 +16,14 @@ import { currentSourcesAtom } from "~/atoms"
 const AnimationDuration = 200
 export function Dnd() {
   const [items, setItems] = useAtom(currentSourcesAtom)
+  const [parent] = useAutoAnimate({ duration: AnimationDuration })
   useEntireQuery(items)
 
   return (
     <DndWrapper items={items} setItems={setItems}>
       <motion.ol
         className="grid w-full gap-6"
+        ref={parent}
         style={{
           gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
         }}
@@ -42,7 +45,6 @@ export function Dnd() {
         {items.map(id => (
           <motion.li
             key={id}
-            layout
             transition={{
               type: "tween",
               duration: AnimationDuration / 1000,

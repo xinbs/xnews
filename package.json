@@ -28,6 +28,7 @@
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^1.4.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
+    "@formkit/auto-animate": "^0.8.2",
     "@iconify-json/si": "^1.2.1",
     "@tanstack/react-query-devtools": "^5.59.9",
     "@tanstack/react-router": "^1.64.0",
