@@ -94,8 +94,12 @@ function DndWrapper({ items, setItems, children }: PropsWithChildren<{
     trailing: true,
     wait: AnimationDuration,
   })
+  const { el } = useAtomValue(goToTopAtom)
+  useEffect(() => {
+    console.log(el)
+  }, [el])
   return (
-    <DndContext onDropTargetChange={run}>
+    <DndContext onDropTargetChange={run} autoscroll={el ? { element: el } : undefined}>
       {children}
     </DndContext>
   )

@@ -71,6 +71,7 @@ export function GlobalOverlayScrollbar({ children, className, ...props }: PropsW
           const el = e.target as HTMLElement
           setGoToTop({
             ok: el.scrollTop > 100,
+            el,
             fn: () => el.scrollTo({ top: 0, behavior: "smooth" }),
           })
         },
