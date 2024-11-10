@@ -159,7 +159,7 @@ function NewsCard({ id, setHandleRef }: NewsCardProps) {
         options={{
           overflow: { x: "hidden" },
         }}
-        defer={false}
+        defer
       >
         <div className={$("transition-opacity-500", isFetching && "op-20")}>
           {!!data?.items?.length && (sources[id].type === "hottest" ? <NewsListHot items={data.items} /> : <NewsListTimeLine items={data.items} />)}
