@@ -21,7 +21,6 @@ const hotstock = defineSource(async () => {
       cookie: cookie.join("; "),
     },
   })
-  console.log(res)
   return res.data.items.filter(k => !k.ad).map(k => ({
     id: k.code,
     url: `https://xueqiu.com/s/${k.code}`,
