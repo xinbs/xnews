@@ -15,12 +15,13 @@ interface StockRes {
 
 const hotstock = defineSource(async () => {
   const url = "https://stock.xueqiu.com/v5/stock/hot_stock/list.json?size=30&_type=10&type=10"
-  const cookie = (await $fetch.raw("https://xueqiu.com")).headers.getSetCookie()
+  const cookie = (await $fetch.raw("https://xueqiu.com/hq")).headers.getSetCookie()
   const res: StockRes = await myFetch(url, {
     headers: {
       cookie: cookie.join("; "),
     },
   })
+  console.log(res)
   return res.data.items.filter(k => !k.ad).map(k => ({
     id: k.code,
     url: `https://xueqiu.com/s/${k.code}`,
