@@ -4,7 +4,7 @@ import { useToast } from "./useToast"
 
 export function usePWA() {
   const toaster = useToast()
-  const { updateServiceWorker } = useRegisterSW()
+  const { updateServiceWorker, needRefresh: [needRefresh] } = useRegisterSW()
 
   useMount(async () => {
     const update = () => {
@@ -21,7 +21,7 @@ export function usePWA() {
           },
         },
       })
-    } else {
+    } else if (needRefresh) {
       if (!navigator) return
 
       if ("connection" in navigator && !navigator.onLine) return
