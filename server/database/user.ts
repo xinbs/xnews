@@ -18,6 +18,9 @@ export class UserTable {
         updated INTEGER
       );
     `).run()
+    await this.db.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_user_id ON user(id);
+    `).run()
     logger.success(`init user table`)
   }
 
