@@ -11,10 +11,10 @@
   },
   "homepage": "https://github.com/ourongxing/newsnow",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "dev": "npm run presource && vite dev",
+    "build": "npm run presource && vite build",
     "lint": "eslint",
-    "source": "tsx ./scripts/favicon.ts && tsx ./scripts/pinyin.ts",
+    "presource": "tsx ./scripts/favicon.ts && tsx ./scripts/source.ts",
     "start": "node --env-file .env.server dist/output/server/index.mjs",
     "preview": "cross-env CF_PAGES=1 npm run build && wrangler pages dev dist/output/public",
     "deploy": "cross-env CF_PAGES=1 npm run build && wrangler pages deploy dist/output/public",
