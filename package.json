@@ -104,20 +104,30 @@
   "pnpm": {
     "patchedDependencies": {
       "dayjs": "patches/dayjs.patch"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@napi-rs/pinyin",
+      "@parcel/watcher",
+      "@swc/core",
+      "better-sqlite3",
+      "esbuild",
+      "sharp",
+      "simple-git-hooks",
+      "workerd"
+    ]
   },
   "resolutions": {
     "cross-spawn": ">=7.0.6",
     "dayjs": "1.11.13",
-    "picomatch": "^4.0.2"
+    "picomatch": "^4.0.2",
+    "react": "^19",
+    "db0": "^0.3.1",
+    "vite": "^6"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
     "*": "eslint --fix"
-  },
-  "volta": {
-    "node": "22.12.0"
   }
 }
