@@ -43,7 +43,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EL9HHYE5LC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-EL9HHYE5LC');
   </script>
@@ -56,9 +56,9 @@
         return ""
       }
     }
-    const theme = safeParseString(localStorage.getItem("color-scheme")) || "auto"
+    const theme = safeParseString(localStorage.getItem("color-scheme")) || "dark"
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-    if (theme === "auto" ? isDark : theme === "dark") {
+    if (theme !== "light") {
       document.documentElement.classList.add("dark")
     }
 
