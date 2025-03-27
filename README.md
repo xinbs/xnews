@@ -7,6 +7,9 @@
 
 English | [简体中文](README.zh-CN.md)
 
+> [!NOTE]
+> This project is just a demo and only supports Chinese. A formal version will be released later for better customization and the addition of more English content.
+
 ***Elegant reading of real-time and hottest news***
 
 ## Features
