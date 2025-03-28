@@ -82,6 +82,14 @@ pnpm dev
 ### Adding Data Sources
 Refer to `shared/sources` and `server/source`s directories. The project provides complete type definitions and a clean architecture.
 
+## Roadmap
+- Add **multi-language support** (English, Chinese, more to come).
+- Improve **personalization options** (category-based news, saved preferences).
+- Expand **data sources** to cover global news in multiple languages.
+
+## Contributing
+Contributions are welcome! Feel free to submit pull requests or create issues for feature requests and bug reports.
+
 ## License
 
 [MIT](./LICENSE) © ourongxing
