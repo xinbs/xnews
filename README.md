@@ -1,5 +1,4 @@
 # NewsNow
-<a href="https://hellogithub.com/repository/c2978695e74a423189e9ca2543ab3b36" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=c2978695e74a423189e9ca2543ab3b36&claim_uid=SMJiFwlsKCkWf89&theme=small" alt="Featured｜HelloGitHub" /></a>
 
 ![](screenshots/preview-1.png)
 
@@ -86,6 +85,9 @@ Refer to `shared/sources` and `server/source`s directories. The project provides
 - Add **multi-language support** (English, Chinese, more to come).
 - Improve **personalization options** (category-based news, saved preferences).
 - Expand **data sources** to cover global news in multiple languages.
+
+***release when ready***
+![](https://testmnbbs.oss-cn-zhangjiakou.aliyuncs.com/pic/20250328172146_rec_.gif?x-oss-process=base_webp)
 
 ## Contributing
 Contributions are welcome! Feel free to submit pull requests or create issues for feature requests and bug reports.
