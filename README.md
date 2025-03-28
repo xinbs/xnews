@@ -70,8 +70,8 @@ docker compose up
 You can also set Environment Variables in `docker-compose.yml`.
 
 ## Development
-[!TIP]
-Requires Node.js >= 20
+> [!Note]
+> Requires Node.js >= 20
 
 ```sh
 corepack enable

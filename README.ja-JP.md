@@ -68,8 +68,8 @@ docker compose up
 環境変数は `docker-compose.yml` でも設定可能。
 
 ## 開発
-[!TIP]
-Node.js >= 20が必要
+> [!TIP]
+> Node.js >= 20が必要
 
 ```sh
 corepack enable

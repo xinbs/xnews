@@ -67,8 +67,8 @@ docker compose up
 同样可以通过 `docker-compose.yaml` 配置环境变量。
 
 ## 开发
-> [!TIP]
-> node version >= 20
+> [!Note]
+> 需要 Node.js >= 20
 
 ```bash
 corepack enable
