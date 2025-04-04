@@ -350,6 +350,14 @@
     "color": "blue",
     "interval": 600000
   },
+  "nowcoder": {
+    "name": "牛客",
+    "type": "hottest",
+    "column": "china",
+    "home": "https://www.nowcoder.com",
+    "color": "blue",
+    "interval": 600000
+  },
   "linuxdo": {
     "redirect": "linuxdo-latest",
     "name": "LINUX DO",
