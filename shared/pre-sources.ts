@@ -151,6 +151,24 @@ export const originSources = {
     interval: Time.Common,
     home: "https://china.cankaoxiaoxi.com",
   },
+  "pcbeta": {
+    name: "远景论坛",
+    color: "blue",
+    column: "tech",
+    home: "https://bbs.pcbeta.com",
+    sub: {
+      windows11: {
+        title: "Windows 11",
+        type: "realtime",
+        interval: Time.Fast,
+      },
+      windows: {
+        title: "Windows 资源",
+        type: "realtime",
+        interval: Time.Fast,
+      },
+    },
+  },
   "cls": {
     name: "财联社",
     color: "red",
@@ -315,8 +333,7 @@ export const originSources = {
   "ghxi": {
     name: "果核剥壳",
     column: "china",
-    color: "green",
-    type: "realtime",
+    color: "yellow",
     home: "https://www.ghxi.com/",
   },
 } as const satisfies Record<string, OriginSource>

@@ -165,6 +165,34 @@
     "color": "red",
     "interval": 1800000
   },
+  "pcbeta": {
+    "redirect": "pcbeta-windows11",
+    "name": "远景论坛",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://bbs.pcbeta.com",
+    "color": "blue",
+    "interval": 300000,
+    "title": "Windows 11"
+  },
+  "pcbeta-windows11": {
+    "name": "远景论坛",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://bbs.pcbeta.com",
+    "color": "blue",
+    "interval": 300000,
+    "title": "Windows 11"
+  },
+  "pcbeta-windows": {
+    "name": "远景论坛",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://bbs.pcbeta.com",
+    "color": "blue",
+    "interval": 300000,
+    "title": "Windows 资源区"
+  },
   "cls": {
     "redirect": "cls-telegraph",
     "name": "财联社",
@@ -389,10 +417,9 @@
   },
   "ghxi": {
     "name": "果核剥壳",
-    "type": "realtime",
     "column": "china",
     "home": "https://www.ghxi.com/",
-    "color": "green",
+    "color": "yellow",
     "interval": 600000
   }
 }
