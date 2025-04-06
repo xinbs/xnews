@@ -273,12 +273,14 @@ export const originSources = {
       },
       "hot-video": {
         title: "热门视频",
+        disable: "cf",
         column: "china",
         type: "hottest",
       },
       "ranking": {
         title: "排行榜",
         column: "china",
+        disable: "cf",
         type: "hottest",
         interval: Time.Common,
       },
