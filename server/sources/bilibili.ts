@@ -119,6 +119,23 @@ const hotVideo = defineSource(async () => {
   }))
 })
 
+const ranking = defineSource(async () => {
+  const url = "https://api.bilibili.com/x/web-interface/ranking/v2"
+  const res: HotVideoRes = await myFetch(url)
+
+  return res.data.list.map(video => ({
+    id: video.bvid,
+    title: video.title,
+    url: `https://www.bilibili.com/video/${video.bvid}`,
+    pubDate: video.pubdate * 1000,
+    extra: {
+      info: `${video.owner.name} · ${formatNumber(video.stat.view)}观看 · ${formatNumber(video.stat.like)}点赞`,
+      hover: video.desc,
+      icon: proxyPicture(video.pic),
+    },
+  }))
+})
+
 function formatNumber(num: number): string {
   if (num >= 10000) {
     return `${Math.floor(num / 10000)}w+`
@@ -130,4 +147,5 @@ export default defineSource({
   "bilibili": hotSearch,
   "bilibili-hot-search": hotSearch,
   "bilibili-hot-video": hotVideo,
+  "bilibili-ranking": ranking,
 })
