@@ -276,6 +276,12 @@ export const originSources = {
         column: "china",
         type: "hottest",
       },
+      "ranking": {
+        title: "排行榜",
+        column: "china",
+        type: "hottest",
+        interval: Time.Common,
+      },
     },
   },
   "kuaishou": {
