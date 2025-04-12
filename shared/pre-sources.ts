@@ -359,14 +359,14 @@ export const originSources = {
   },
   "sspai": {
     name: "少数派",
-    column: "china",
+    column: "tech",
     color: "red",
     type: "hottest",
     home: "https://sspai.com",
   },
   "juejin": {
     name: "稀土掘金",
-    column: "china",
+    column: "tech",
     color: "blue",
     type: "hottest",
     home: "https://juejin.cn",

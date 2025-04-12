@@ -454,7 +454,7 @@
   "sspai": {
     "name": "少数派",
     "type": "hottest",
-    "column": "china",
+    "column": "tech",
     "home": "https://sspai.com",
     "color": "red",
     "interval": 600000
@@ -462,7 +462,7 @@
   "juejin": {
     "name": "稀土掘金",
     "type": "hottest",
-    "column": "china",
+    "column": "tech",
     "home": "https://juejin.cn",
     "color": "blue",
     "interval": 600000
