@@ -152,7 +152,6 @@
   },
   "sputniknewscn": {
     "name": "卫星通讯社",
-    "disable": "cf",
     "column": "world",
     "home": "https://sputniknews.cn",
     "color": "orange",
@@ -429,7 +428,6 @@
   },
   "ghxi": {
     "name": "果核剥壳",
-    "disable": "cf",
     "column": "china",
     "home": "https://www.ghxi.com/",
     "color": "yellow",
