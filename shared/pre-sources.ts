@@ -139,8 +139,6 @@ export const originSources = {
   "sputniknewscn": {
     name: "卫星通讯社",
     color: "orange",
-    // cloudflare pages cannot access
-    disable: "cf",
     column: "world",
     home: "https://sputniknews.cn",
   },
@@ -340,7 +338,6 @@ export const originSources = {
     name: "果核剥壳",
     column: "china",
     color: "yellow",
-    disable: "cf",
     home: "https://www.ghxi.com/",
   },
   "smzdm": {
