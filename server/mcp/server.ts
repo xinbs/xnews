@@ -20,28 +20,21 @@ export function getServer() {
       id: z.string().describe(`source id. e.g. ${description}`),
       count: z.any().default(10).describe("count of news to return."),
     },
-    async ({ count }): Promise<CallToolResult> => {
+    async ({ id, count }): Promise<CallToolResult> => {
       let n = Number(count)
       if (Number.isNaN(n) || n < 1) {
         n = 10
       }
-      await delay(5000)
-      return {
-        content: [{
-          text: "hello",
-          type: "text",
-        }],
-      }
 
-      // const res: SourceResponse = await $fetch(`https://newsnow.busiyi.world/api/s?id=${id}`)
-      // return {
-      //   content: res.items.slice(0, count).map((item) => {
-      //     return {
-      //       text: `[${item.title}](${item.url})`,
-      //       type: "text",
-      //     }
-      //   }),
-      // }
+      const res: SourceResponse = await $fetch(`/api/s?id=${id}`)
+      return {
+        content: res.items.slice(0, count).map((item) => {
+          return {
+            text: `[${item.title}](${item.url})`,
+            type: "text",
+          }
+        }),
+      }
     },
   )
 
