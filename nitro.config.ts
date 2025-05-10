@@ -17,6 +17,11 @@ const nitroOption: Parameters<typeof viteNitro>[0] = {
       connector: "better-sqlite3",
     },
   },
+  devDatabase: {
+    default: {
+      connector: "better-sqlite3",
+    },
+  },
   imports: {
     dirs: ["server/utils", "shared"],
   },
