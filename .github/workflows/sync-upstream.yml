@@ -1,0 +1,96 @@
+name: Sync Upstream
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 要同步的分支
+        required: false
+        default: main
+  schedule:
+    - cron: '0 3 * * *' # 每天 UTC 03:00 运行一次
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Git user
+        shell: bash
+        run: |
+          set -eux
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote and fetch
+        shell: bash
+        run: |
+          set -eux
+          # 添加或更新 upstream 指向上游仓库
+          git remote add upstream https://github.com/ourongxing/newsnow.git || git remote set-url upstream https://github.com/ourongxing/newsnow.git
+
+          BRANCH="${{ github.event.inputs.branch }}"
+          if [ -z "${BRANCH}" ]; then BRANCH="main"; fi
+          echo "BRANCH=${BRANCH}" >> "$GITHUB_ENV"
+
+          # 获取上游分支及标签
+          git fetch --tags upstream "${BRANCH}"
+          # 也获取一下 origin 对应分支，避免后续比较失败
+          git fetch origin "${BRANCH}" || true
+
+      - name: Prepare local branch
+        shell: bash
+        run: |
+          set -eux
+          # 切到目标分支（不存在则基于 origin 或空创建）
+          if ! git show-ref --verify --quiet "refs/heads/${BRANCH}"; then
+            if git rev-parse --verify "origin/${BRANCH}" >/dev/null 2>&1; then
+              git checkout -B "${BRANCH}" "origin/${BRANCH}"
+            else
+              git checkout -B "${BRANCH}"
+            fi
+          else
+            git checkout "${BRANCH}"
+          fi
+
+      - name: Merge upstream changes
+        shell: bash
+        run: |
+          set -eux
+          # 先尝试快进合并，不行再进行普通合并
+          if git merge --ff-only "upstream/${BRANCH}"; then
+            echo "Fast-forward 成功或已是最新。"
+          else
+            echo "Fast-forward 失败，使用 -X ours 策略在冲突处保留本地改动。"
+            # 注意：-X ours 仅在有冲突的文件中保留当前分支的内容，
+            # 无冲突的变更仍会从上游合并进来；不要误用 -s ours（会忽略上游所有内容）。
+            git merge -X ours --no-edit "upstream/${BRANCH}"
+          fi
+
+      - name: Push changes if any
+        shell: bash
+        run: |
+          set -eux
+          # 比较与 origin 的差异，决定是否推送
+          if git rev-parse --verify "origin/${BRANCH}" >/dev/null 2>&1; then
+            if ! git diff --quiet "origin/${BRANCH}"...HEAD; then
+              git push --follow-tags origin "${BRANCH}"
+            else
+              echo "没有需要推送的变更。"
+            fi
+          else
+            # origin 尚无该分支，直接推送
+            git push --follow-tags origin "${BRANCH}"
+          fi
