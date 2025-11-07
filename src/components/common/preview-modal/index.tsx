@@ -103,55 +103,51 @@ export function PreviewModal() {
         </div>
 
         <div className="flex-1 p-2">
-          {(() => {
-            if (useRenderProxy) {
-              if (allowScripts && renderEndpoint) {
-                return (
-                  <iframe
-                    src={renderEndpoint}
-                    title={String(item.id)}
-                    className="w-full h-full rounded-md"
-                    sandbox="allow-scripts allow-same-origin allow-popups"
-                  />
-                )
-              }
-              if (renderHTML) {
-                return (
-                  <iframe
-                    srcDoc={renderHTML}
-                    title={String(item.id)}
-                    className="w-full h-full rounded-md"
-                    sandbox="allow-popups"
-                  />
-                )
-              }
-              return (
-                <div className="w-full h-full flex items-center justify-center text-sm op-60">
-                  {renderError
+          {useRenderProxy
+            ? (
+                allowScripts && renderEndpoint
+                  ? (
+                      <iframe
+                        src={renderEndpoint}
+                        title={String(item.id)}
+                        className="w-full h-full rounded-md"
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                      />
+                    )
+                  : renderHTML
                     ? (
-                        <span>
-                          渲染失败：
-                          {renderError}
-                          ，
-                          <a className="color-primary" href={url} target="_blank" rel="noreferrer">在新标签打开</a>
-                        </span>
+                        <iframe
+                          srcDoc={renderHTML}
+                          title={String(item.id)}
+                          className="w-full h-full rounded-md"
+                          sandbox="allow-popups allow-popups-to-escape-sandbox"
+                        />
                       )
                     : (
-                        <span>正在渲染预览...</span>
-                      )}
-                </div>
+                        <div className="w-full h-full flex items-center justify-center text-sm op-60">
+                          {renderError
+                            ? (
+                                <span>
+                                  渲染失败：
+                                  {renderError}
+                                  ，
+                                  <a className="color-primary" href={url} target="_blank" rel="noreferrer">在新标签打开</a>
+                                </span>
+                              )
+                            : (
+                                <span>正在渲染预览...</span>
+                              )}
+                        </div>
+                      )
               )
-            }
-            return (
-              <iframe
-                src={url}
-                title={String(item.id)}
-                className="w-full h-full rounded-md"
-                referrerPolicy="no-referrer"
-                sandbox="allow-popups"
-              />
-            )
-          })()}
+            : (
+                <iframe
+                  src={url}
+                  title={String(item.id)}
+                  className="w-full h-full rounded-md"
+                  referrerPolicy="no-referrer"
+                />
+              )}
         </div>
       </div>
     </div>
