@@ -19,6 +19,7 @@ export default defineConfig({
       "~": join(projectDir, "src"),
       "@shared": join(projectDir, "shared"),
     },
+    dedupe: ["react", "react-dom"],
   },
   plugins: [
     TanStackRouterVite({
