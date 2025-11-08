@@ -17,6 +17,7 @@ export function Column({ id }: { id: FixedColumnID }) {
       <div className="flex justify-center md:hidden mb-6">
         <NavBar />
       </div>
+
       {id === currentColumnID && <Dnd />}
     </>
   )

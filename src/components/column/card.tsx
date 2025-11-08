@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useInView } from "framer-motion"
 import { useWindowSize } from "react-use"
 import { forwardRef, useImperativeHandle } from "react"
 import { OverlayScrollbar } from "../common/overlay-scrollbar"
+import { NewsPreview } from "../news-preview"
 import { safeParseString } from "~/utils"
 
 export interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -230,11 +231,8 @@ function NewsListHot({ items }: { items: NewsItem[] }) {
   return (
     <ol className="flex flex-col gap-2">
       {items?.map((item, i) => (
-        <a
-          href={width < 768 ? item.mobileUrl || item.url : item.url}
-          target="_blank"
+        <div
           key={item.id}
-          title={item.extra?.hover}
           className={$(
             "flex gap-2 items-center items-stretch relative cursor-pointer [&_*]:cursor-pointer transition-all",
             "hover:bg-neutral-400/10 rounded-md pr-1 visited:(text-neutral-400)",
@@ -244,15 +242,24 @@ function NewsListHot({ items }: { items: NewsItem[] }) {
             {i + 1}
           </span>
           {!!item.extra?.diff && <DiffNumber diff={item.extra.diff} />}
-          <span className="self-start line-height-none">
-            <span className="mr-2 text-base">
-              {item.title}
-            </span>
-            <span className="text-xs text-neutral-400/80 truncate align-middle">
-              <ExtraInfo item={item} />
-            </span>
-          </span>
-        </a>
+          <div className="self-start line-height-none flex-1 flex items-center gap-2">
+            <a
+              href={width < 768 ? item.mobileUrl || item.url : item.url}
+              target="_blank"
+              title={item.extra?.hover}
+              className="flex-1"
+            >
+              <span className="mr-2 text-base">
+                {item.title}
+              </span>
+            </a>
+            <NewsPreview item={item}>
+              <span className="text-xs text-neutral-400/80 truncate align-middle">
+                {item.extra?.info || <ExtraInfo item={item} />}
+              </span>
+            </NewsPreview>
+          </div>
+        </div>
       ))}
     </ol>
   )
@@ -273,18 +280,25 @@ function NewsListTimeLine({ items }: { items: NewsItem[] }) {
               <ExtraInfo item={item} />
             </span>
           </span>
-          <a
-            className={$(
-              "ml-2 px-1 hover:bg-neutral-400/10 rounded-md visited:(text-neutral-400/80)",
-              "cursor-pointer [&_*]:cursor-pointer transition-all",
-            )}
-            href={width < 768 ? item.mobileUrl || item.url : item.url}
-            title={item.extra?.hover}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {item.title}
-          </a>
+          <div className="ml-2 flex items-center gap-2">
+            <a
+              className={$(
+                "px-1 hover:bg-neutral-400/10 rounded-md visited:(text-neutral-400/80)",
+                "cursor-pointer [&_*]:cursor-pointer transition-all flex-1",
+              )}
+              href={width < 768 ? item.mobileUrl || item.url : item.url}
+              title={item.extra?.hover}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.title}
+            </a>
+            <NewsPreview item={item}>
+              <span className="text-xs text-neutral-400/80">
+                {item.extra?.info || <ExtraInfo item={item} />}
+              </span>
+            </NewsPreview>
+          </div>
         </li>
       ))}
     </ol>

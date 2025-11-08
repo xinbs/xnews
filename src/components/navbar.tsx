@@ -21,6 +21,15 @@ export function NavBar() {
       >
         更多
       </button>
+      <Link
+        to="/reader"
+        className={$([
+          "px-2 hover:(bg-primary/10 rounded-md) cursor-pointer transition-all",
+          "op-70 dark:op-90",
+        ])}
+      >
+        Reader
+      </Link>
       {fixedColumnIds.map(columnId => (
         <Link
           key={columnId}
