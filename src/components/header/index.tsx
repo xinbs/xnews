@@ -4,6 +4,7 @@ import type { SourceID } from "@shared/types"
 import { NavBar } from "../navbar"
 import { Menu } from "./menu"
 import { currentSourcesAtom, goToTopAtom } from "~/atoms"
+import { currentReaderSourceAtom } from "~/atoms/reader"
 
 function GoTop() {
   const { ok, fn: goToTop } = useAtomValue(goToTopAtom)
@@ -25,12 +26,21 @@ function Github() {
 
 function Refresh() {
   const currentSources = useAtomValue(currentSourcesAtom)
+  const readerCurrent = useAtomValue(currentReaderSourceAtom)
   const { refresh } = useRefetch()
-  const refreshAll = useCallback(() => refresh(...currentSources), [refresh, currentSources])
+
+  // 在 Reader 页面时仅刷新当前来源；其他页面刷新当前栏目来源
+  const refreshAll = useCallback(() => {
+    const isReader = location.pathname === "/reader"
+    if (isReader && readerCurrent) return refresh(readerCurrent)
+    return refresh(...currentSources)
+  }, [refresh, currentSources, readerCurrent])
 
   const isFetching = useIsFetching({
     predicate: (query) => {
       const [type, id] = query.queryKey as ["source" | "entire", SourceID]
+      const isReader = location.pathname === "/reader"
+      if (isReader) return type === "source" && id === readerCurrent
       return (type === "source" && currentSources.includes(id)) || type === "entire"
     },
   })

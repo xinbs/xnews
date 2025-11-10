@@ -1,11 +1,11 @@
-import type { SourceResponse, NewsItem } from "@shared/types"
+import type { NewsItem, SourceID, SourceResponse } from "@shared/types"
 import { sources } from "@shared/sources"
-import { cacheSources } from "~/utils/data"
-import { currentReaderSourceAtom, currentReaderPreviewAtom } from "~/atoms/reader"
 import { useAtom } from "jotai"
 import { useQuery } from "@tanstack/react-query"
+import { cacheSources, refetchSources } from "~/utils/data"
+import { currentReaderPreviewAtom, currentReaderSourceAtom } from "~/atoms/reader"
 import { OverlayScrollbar } from "~/components/common/overlay-scrollbar"
-import { myFetch } from "~/utils"
+import { myFetch, safeParseString } from "~/utils"
 import { useRelativeTime } from "~/hooks/useRelativeTime"
 
 export function List() {
@@ -13,9 +13,21 @@ export function List() {
   const { data, isFetching } = useQuery({
     queryKey: ["source", current],
     queryFn: async ({ queryKey }) => {
-      const id = queryKey[1] as any
-      if (cacheSources.has(id)) return cacheSources.get(id)!
-      const res: SourceResponse = await myFetch(`/s?id=${id}`)
+      const id = queryKey[1] as SourceID
+      let url = `/s?id=${id}`
+      const headers: Record<string, any> = {}
+
+      // 支持强制刷新 latest（与栏目卡片一致）
+      if (refetchSources.has(id)) {
+        url = `/s?id=${id}&latest`
+        const jwt = safeParseString(localStorage.getItem("jwt"))
+        if (jwt) headers.Authorization = `Bearer ${jwt}`
+        refetchSources.delete(id)
+      } else if (cacheSources.has(id)) {
+        return cacheSources.get(id)!
+      }
+
+      const res: SourceResponse = await myFetch(url, { headers })
       cacheSources.set(id, res)
       return res
     },
@@ -26,7 +38,7 @@ export function List() {
   const updatedRelative = useRelativeTime(data?.updatedTime ?? "")
 
   return (
-    <OverlayScrollbar className={$(["h-full overflow-y-auto", isFetching && "animate-pulse"]) } defer>
+    <OverlayScrollbar className={$(["h-full overflow-y-auto", isFetching && "animate-pulse"])} defer>
       <div className="flex items-center justify-between px-2 py-2 mb-2 border-b border-base">
         <div className="flex items-center gap-2">
           <span
@@ -40,10 +52,14 @@ export function List() {
             </span>
           )}
         </div>
-        <span className="text-xs op-60">{updatedRelative || "加载中..."} 更新</span>
+        <span className="text-xs op-60">
+          {updatedRelative || "加载中..."}
+          {" "}
+          更新
+        </span>
       </div>
       <ul className="space-y-1">
-        {data?.items?.map((item) => (
+        {data?.items?.map(item => (
           <li key={item.id}>
             <ListItem item={item} />
           </li>
