@@ -1,16 +1,16 @@
 services:
   newsnow:
-    build: .
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:20-bullseye}
+    restart: unless-stopped
     ports:
       - '4444:4444'
     volumes:
       - newsnow_data:/usr/app/.data
-    environment:
-      - G_CLIENT_ID=
-      - G_CLIENT_SECRET=
-      - JWT_SECRET=
-      - INIT_TABLE=true
-      - ENABLE_CACHE=true
+    env_file:
+      - .env.server
 
 volumes:
   newsnow_data:
