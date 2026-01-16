@@ -9,9 +9,10 @@ export function ReaderLayout() {
       "md:grid-cols-[200px_300px_1fr]",
       "max-md:(flex flex-col)",
       "h-[calc(100vh-140px)]",
-    ])}>
+    ])}
+    >
       <aside className="h-full max-md:order-1">
-      <Sidebar />
+        <Sidebar />
       </aside>
       <section className="max-md:order-2">
         <List />

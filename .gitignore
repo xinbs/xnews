@@ -14,5 +14,4 @@ wrangler.toml
 imports.app.d.ts
 package-lock.json
 .specstory/
-docker-compose.local.yml
-docker-compose.local.yml
+

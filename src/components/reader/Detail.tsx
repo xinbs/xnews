@@ -13,14 +13,24 @@ export function Detail() {
   // 预计算预览地址与域名，保持 hooks 顺序一致
   const url = (preview?.mobileUrl || preview?.url || "") as string
   const hostname = useMemo(() => {
-    try { return new URL(url).hostname } catch { return "" }
+    try {
+      return new URL(url).hostname
+    } catch {
+      return ""
+    }
   }, [url])
   // 这些站点通常禁止被 iframe 嵌入
-  const blockedPreviewHosts = new Set([
-    "www.toutiao.com", "toutiao.com", "m.toutiao.com",
-    "www.zhihu.com", "zhihu.com", "m.zhihu.com", "zhuanlan.zhihu.com",
-    "weibo.com", "www.weibo.com",
-  ])
+  const blockedPreviewHosts = useMemo(() => new Set([
+    "www.toutiao.com",
+    "toutiao.com",
+    "m.toutiao.com",
+    "www.zhihu.com",
+    "zhihu.com",
+    "m.zhihu.com",
+    "zhuanlan.zhihu.com",
+    "weibo.com",
+    "www.weibo.com",
+  ]), [])
   const [probeBlocked, setProbeBlocked] = useState<boolean | null>(null)
   const useRenderProxy = blockedPreviewHosts.has(hostname) || probeBlocked === true
 
@@ -30,17 +40,25 @@ export function Detail() {
     // 已知受限域名直接标记，不做多余探测
     if (blockedPreviewHosts.has(hostname)) {
       setProbeBlocked(true)
-      return () => { active = false }
+      return () => {
+        active = false
+      }
     }
     setProbeBlocked(null)
     if (url) {
       const q = new URLSearchParams({ type: "encodeURIComponent", url })
       myFetch(`/probe/frame?${q.toString()}`)
-        .then((res: any) => { if (active) setProbeBlocked(Boolean(res?.blocked)) })
-        .catch(() => { if (active) setProbeBlocked(false) })
+        .then((res: any) => {
+          if (active) setProbeBlocked(Boolean(res?.blocked))
+        })
+        .catch(() => {
+          if (active) setProbeBlocked(false)
+        })
     }
-    return () => { active = false }
-  }, [hostname, url])
+    return () => {
+      active = false
+    }
+  }, [blockedPreviewHosts, hostname, url])
 
   const [renderHTML, setRenderHTML] = useState<string>("")
   const [renderError, setRenderError] = useState<string>("")
@@ -66,15 +84,23 @@ export function Detail() {
       if (allowScripts) q.set("scripts", "1")
       if (useExtractMode) q.set("mode", "extract")
       myFetch(`/render?${q.toString()}`)
-        .then((html: string) => { if (active) setRenderHTML(html) })
-        .catch((e: any) => { if (active) setRenderError(e?.message || "渲染失败") })
+        .then((html: string) => {
+          if (active) setRenderHTML(html)
+        })
+        .catch((e: any) => {
+          if (active) setRenderError(e?.message || "渲染失败")
+        })
     }
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [useRenderProxy, url, allowScripts, useExtractMode])
   // 无预览时不要显示提示文案，避免影响阅读视觉
-  if (!preview) return (
+  if (!preview) {
+    return (
       <div className="h-full" aria-hidden />
     )
+  }
 
   return (
     <div className="h-full overflow-y-auto p-2">
@@ -82,7 +108,12 @@ export function Detail() {
         <h2 className="text-base font-bold mb-1 leading-snug">{preview.title}</h2>
         {/* 额外信息与相对时间 */}
         <div className="text-xs op-60 mb-2">
-          {time && <span>更新时间：{time}</span>}
+          {time && (
+            <span>
+              更新时间：
+              {time}
+            </span>
+          )}
           {preview.extra?.info && <span className="ml-2">{preview.extra.info}</span>}
           {!preview.extra?.info && preview.extra?.hover && <span className="ml-2">{preview.extra.hover}</span>}
         </div>
@@ -111,32 +142,45 @@ export function Detail() {
         )}
       </div>
       <div className="mt-3 border-t border-base">
-        {useRenderProxy ? (
-          allowScripts && renderEndpoint ? (
-                  <iframe
-                    src={renderEndpoint}
-                    title={String(preview.id)}
-                    className="w-full h-[calc(100vh-180px)] rounded-md"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-                  />
-          ) : renderHTML ? (
+        {useRenderProxy
+          ? (
+              allowScripts && renderEndpoint
+                ? (
                     <iframe
-                      srcDoc={renderHTML}
+                      src={renderEndpoint}
                       title={String(preview.id)}
                       className="w-full h-[calc(100vh-180px)] rounded-md"
-                      // 保守策略默认禁用脚本；抽取或禁用脚本时不授予脚本权限
-                      sandbox="allow-popups allow-popups-to-escape-sandbox"
+                      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                     />
-          ) : (
-                    <div className="w-full h-[calc(100vh-180px)] flex items-center justify-center text-sm op-60">
-              {renderError ? (
-                <span>渲染失败：{renderError}，<a className="color-primary" href={url} target="_blank" rel="noreferrer">在新标签打开</a></span>
-              ) : (
-                            <span>正在渲染预览...</span>
-                          )}
-                    </div>
-          )
-        ) : (
+                  )
+                : renderHTML
+                  ? (
+                      <iframe
+                        srcDoc={renderHTML}
+                        title={String(preview.id)}
+                        className="w-full h-[calc(100vh-180px)] rounded-md"
+                        // 保守策略默认禁用脚本；抽取或禁用脚本时不授予脚本权限
+                        sandbox="allow-popups allow-popups-to-escape-sandbox"
+                      />
+                    )
+                  : (
+                      <div className="w-full h-[calc(100vh-180px)] flex items-center justify-center text-sm op-60">
+                        {renderError
+                          ? (
+                              <span>
+                                渲染失败：
+                                {renderError}
+                                ，
+                                <a className="color-primary" href={url} target="_blank" rel="noreferrer">在新标签打开</a>
+                              </span>
+                            )
+                          : (
+                              <span>正在渲染预览...</span>
+                            )}
+                      </div>
+                    )
+            )
+          : (
               <iframe
                 src={url}
                 title={String(preview.id)}
