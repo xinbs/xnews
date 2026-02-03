@@ -1,3 +1,4 @@
+import * as cheerio from "cheerio"
 import { decodeBase64URL } from "#/utils/base64"
 
 export default defineEventHandler(async (event) => {

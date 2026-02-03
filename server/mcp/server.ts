@@ -38,6 +38,23 @@ export function getServer() {
     },
   )
 
+  server.tool(
+    "get_sources",
+    "Get all available news sources",
+    {},
+    async (): Promise<CallToolResult> => {
+      const sources = await $fetch("/api/sources")
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(sources, null, 2),
+          },
+        ],
+      }
+    },
+  )
+
   server.server.onerror = console.error.bind(console)
 
   return server
