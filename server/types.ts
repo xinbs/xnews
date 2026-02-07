@@ -56,6 +56,7 @@ export interface RSSHubOption {
   sorted?: boolean
   // default: 20
   limit?: number
+  cache?: number
 }
 
 export interface SourceOption {

@@ -1,3 +1,4 @@
+import type { NewsItem } from "@shared/types"
 import * as cheerio from "cheerio"
 
 // 定义文章统计信息接口
@@ -106,6 +107,29 @@ function extractIdFromUrl(url: string): string {
 
 export default defineSource(async () => {
   const baseUrl = "https://www.freebuf.com"
+  const rssHubTypes = ["web", "network", "system", "terminal", "database", "wireless", "security-management", "es", "vuls", "sectool", "geek"]
+  const getTime = (item: NewsItem) => {
+    const value = item.pubDate ?? item.extra?.date
+    if (!value) return 0
+    if (typeof value === "number") return value
+    const time = Date.parse(value)
+    return Number.isNaN(time) ? 0 : time
+  }
+  const getRSSHubItems = async () => {
+    const getters = rssHubTypes.map(type => defineRSSHubSource(`/freebuf/articles/${type}`, { limit: 10, cache: 0 }))
+    const results = await Promise.allSettled(getters.map(getter => getter()))
+    const seen = new Map<string, NewsItem>()
+    results.forEach((result) => {
+      if (result.status !== "fulfilled") return
+      result.value.forEach((item) => {
+        const key = String(item.id ?? item.url)
+        if (!seen.has(key)) seen.set(key, item)
+      })
+    })
+    return Array.from(seen.values()).sort((a, b) => getTime(b) - getTime(a)).slice(0, 30)
+  }
+  const rssHubItems = await getRSSHubItems()
+  if (rssHubItems.length) return rssHubItems
   try {
     const html = await myFetch<any>(baseUrl, {
       headers: {
@@ -165,7 +189,6 @@ export default defineSource(async () => {
       },
     }))
   } catch {
-    const fallback = defineRSSHubSource("/freebuf/articles/network", { limit: 30 })
-    return fallback()
+    return rssHubItems
   }
 })

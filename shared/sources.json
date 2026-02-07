@@ -197,6 +197,13 @@
     "color": "red",
     "interval": 1800000
   },
+  "reuters": {
+    "name": "路透社",
+    "column": "world",
+    "home": "https://www.reuters.com",
+    "color": "gray",
+    "interval": 1800000
+  },
   "pcbeta": {
     "redirect": "pcbeta-windows11",
     "name": "远景论坛",

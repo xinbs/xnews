@@ -1,0 +1,1 @@
+export default defineSource(defineRSSSource("https://news.google.com/rss/search?q=site%3Areuters.com&hl=en-US&gl=US&ceid=US%3Aen"))
