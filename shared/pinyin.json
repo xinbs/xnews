@@ -18,7 +18,7 @@
   "thepaper": "pengpaixinwen-rebang",
   "sputniknewscn": "weixingtongxunshe",
   "cankaoxiaoxi": "cankaoxiaoxi",
-  "reuters": "lutuoshe",
+  "reuters": "lutoushe",
   "pcbeta-windows11": "yuanjingluntan-Win11",
   "cls-telegraph": "cailianshe-dianbao",
   "cls-depth": "cailianshe-shendu",
@@ -48,6 +48,9 @@
   "steam": "Steam-zaixianrenshu",
   "tencent-hot": "tengxunxinwen-zonghezaobao",
   "freebuf": "Freebuf-wangluoanquan",
+  "secwiki-latest": "SecWiki-zuixin",
+  "secwiki-weekly": "SecWiki-zhoukan",
+  "doonsec": "Doonsec-gongzhonghao",
   "qqvideo-tv-hotsearch": "tengxunshipin-resoubang",
   "iqiyi-hot-ranklist": "aiqiyi-rebobang"
 }

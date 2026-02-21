@@ -7,9 +7,12 @@ import { currentReaderPreviewAtom, currentReaderSourceAtom } from "~/atoms/reade
 import { OverlayScrollbar } from "~/components/common/overlay-scrollbar"
 import { myFetch, safeParseString } from "~/utils"
 import { useRelativeTime } from "~/hooks/useRelativeTime"
+import { useRefetch } from "~/hooks/useRefetch"
 
 export function List() {
   const [current] = useAtom(currentReaderSourceAtom)
+  const [preview] = useAtom(currentReaderPreviewAtom)
+  const { refresh } = useRefetch()
   const { data, isFetching } = useQuery({
     queryKey: ["source", current],
     queryFn: async ({ queryKey }) => {
@@ -39,7 +42,7 @@ export function List() {
 
   return (
     <OverlayScrollbar className={$(["h-full overflow-y-auto", isFetching && "animate-pulse"])} defer>
-      <div className="flex items-center justify-between px-2 py-2 mb-2 border-b border-base">
+      <div className="sticky top-0 z-10 bg-base/80 backdrop-blur flex items-center justify-between px-2 py-2 border-b border-base">
         <div className="flex items-center gap-2">
           <span
             className="w-5 h-5 rounded bg-cover"
@@ -52,16 +55,24 @@ export function List() {
             </span>
           )}
         </div>
-        <span className="text-xs op-60">
-          {updatedRelative || "加载中..."}
-          {" "}
-          更新
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs op-60">
+            {updatedRelative || "加载中..."}
+            {" "}
+            更新
+          </span>
+          <button
+            type="button"
+            title="强制刷新"
+            className={$("btn i-ph:arrow-counter-clockwise-duotone", isFetching && "animate-spin i-ph:circle-dashed-duotone")}
+            onClick={() => refresh(current)}
+          />
+        </div>
       </div>
-      <ul className="space-y-1">
+      <ul className="space-y-1 p-2">
         {data?.items?.map(item => (
           <li key={item.id}>
-            <ListItem item={item} />
+            <ListItem item={item} active={preview?.id === item.id} />
           </li>
         ))}
       </ul>
@@ -69,11 +80,11 @@ export function List() {
   )
 }
 
-function ListItem({ item }: { item: NewsItem }) {
+function ListItem({ item, active }: { item: NewsItem, active?: boolean }) {
   const [, setPreview] = useAtom(currentReaderPreviewAtom)
   const time = useRelativeTime((item.pubDate || item?.extra?.date || "") as any)
   return (
-    <button type="button" className="w-full text-left p-2 rounded-md hover:bg-neutral-400/10 transition-all visited:(text-neutral-400)" onClick={() => setPreview(item)}>
+    <button type="button" className={$("w-full text-left p-2 rounded-md transition-all visited:(text-neutral-400)", active ? "bg-base/70" : "hover:bg-neutral-400/10")} onClick={() => setPreview(item)}>
       <div className="text-sm font-medium leading-tight">{item.title}</div>
       <div className="flex items-center gap-2 text-xs op-70 mt-1">
         {time && <span>{time}</span>}

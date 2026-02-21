@@ -96,7 +96,6 @@ function extractCategory($article: cheerio.Cheerio<any>): string {
   return ""
 }
 
-// 通过截取freebuf的文章url获取新闻id
 function extractIdFromUrl(url: string): string {
   // 找到最后一个斜杠
   const lastPart = url.slice(url.lastIndexOf("/") + 1) // "460614.html"
@@ -105,7 +104,7 @@ function extractIdFromUrl(url: string): string {
   return match ? match[0] : ""
 }
 
-export default defineSource(async () => {
+const freebuf = defineSource(async () => {
   const baseUrl = "https://www.freebuf.com"
   const rssHubTypes = ["web", "network", "system", "terminal", "database", "wireless", "security-management", "es", "vuls", "sectool", "geek"]
   const getTime = (item: NewsItem) => {
@@ -192,3 +191,5 @@ export default defineSource(async () => {
     return rssHubItems
   }
 })
+
+export default freebuf

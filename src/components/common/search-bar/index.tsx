@@ -1,10 +1,11 @@
 import { Command } from "cmdk"
 import { useMount } from "react-use"
-import type { SourceID } from "@shared/types"
-import { useMemo, useRef, useState } from "react"
+import type { Source, SourceID } from "@shared/types"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import pinyin from "@shared/pinyin.json"
 import { OverlayScrollbar } from "../overlay-scrollbar"
 import { CardWrapper } from "~/components/column/card"
+import { myFetch } from "~/utils"
 
 import "./cmdk.css"
 
@@ -38,9 +39,42 @@ function groupByColumn(items: SourceItemProps[]) {
 
 export function SearchBar() {
   const { opened, toggle } = useSearchBar()
-  const sourceItems = useMemo(
-    () =>
-      groupByColumn(typeSafeObjectEntries(sources)
+  const [remoteSources, setRemoteSources] = useState<Array<{ id: SourceID } & Source> | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const refreshSources = useCallback(async () => {
+    setRefreshing(true)
+    try {
+      const res = await myFetch("/sources", {
+        query: { t: Date.now() },
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }) as Array<{ id: SourceID } & Source>
+      if (Array.isArray(res) && res.length) {
+        setRemoteSources(res)
+      }
+    } finally {
+      setRefreshing(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (opened) refreshSources()
+  }, [opened, refreshSources])
+
+  const sourceItems = useMemo(() => {
+    const items = (() => {
+      if (remoteSources) {
+        return remoteSources.filter(source => !source.redirect).map(source => ({
+          id: source.id,
+          title: source.title,
+          column: source.column ? columns[source.column].zh : "未分类",
+          name: source.name,
+          pinyin: pinyin?.[source.id as keyof typeof pinyin] ?? "",
+        }))
+      }
+      return typeSafeObjectEntries(sources)
         .filter(([_, source]) => !source.redirect)
         .map(([k, source]) => ({
           id: k,
@@ -48,9 +82,10 @@ export function SearchBar() {
           column: source.column ? columns[source.column].zh : "未分类",
           name: source.name,
           pinyin: pinyin?.[k as keyof typeof pinyin] ?? "",
-        })))
-    , [],
-  )
+        }))
+    })()
+    return groupByColumn(items)
+  }, [remoteSources])
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const [value, setValue] = useState<SourceID>("github-trending-today")
@@ -80,11 +115,20 @@ export function SearchBar() {
         }
       }}
     >
-      <Command.Input
-        ref={inputRef}
-        autoFocus
-        placeholder="搜索你想要的"
-      />
+      <div className="flex items-center gap-2">
+        <Command.Input
+          ref={inputRef}
+          autoFocus
+          placeholder="搜索你想要的"
+          className="flex-1"
+        />
+        <button
+          type="button"
+          title="刷新列表"
+          className={$("btn i-ph:arrow-counter-clockwise-duotone", refreshing && "animate-spin i-ph:circle-dashed-duotone")}
+          onClick={refreshSources}
+        />
+      </div>
       <div className="md:flex pt-2">
         <OverlayScrollbar defer className="overflow-y-auto md:min-w-275px">
           <Command.List>

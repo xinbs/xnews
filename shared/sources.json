@@ -533,6 +533,40 @@
     "color": "green",
     "interval": 600000
   },
+  "secwiki": {
+    "redirect": "secwiki-latest",
+    "name": "SecWiki",
+    "column": "tech",
+    "home": "https://www.sec-wiki.com",
+    "color": "blue",
+    "interval": 1800000,
+    "title": "最新"
+  },
+  "secwiki-latest": {
+    "name": "SecWiki",
+    "column": "tech",
+    "home": "https://www.sec-wiki.com",
+    "color": "blue",
+    "interval": 1800000,
+    "title": "最新"
+  },
+  "secwiki-weekly": {
+    "name": "SecWiki",
+    "column": "tech",
+    "home": "https://www.sec-wiki.com/weekly",
+    "color": "blue",
+    "interval": 3600000,
+    "title": "周刊"
+  },
+  "doonsec": {
+    "title": "公众号",
+    "name": "Doonsec",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://wechat.doonsec.com",
+    "color": "green",
+    "interval": 1800000
+  },
   "qqvideo": {
     "redirect": "qqvideo-tv-hotsearch",
     "name": "腾讯视频",

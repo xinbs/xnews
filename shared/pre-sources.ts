@@ -460,6 +460,33 @@ export const originSources = {
     type: "hottest",
     home: "https://www.freebuf.com/",
   },
+  "secwiki": {
+    name: "SecWiki",
+    column: "tech",
+    color: "blue",
+    home: "https://www.sec-wiki.com",
+    sub: {
+      latest: {
+        title: "最新",
+        interval: Time.Common,
+        home: "https://www.sec-wiki.com",
+      },
+      weekly: {
+        title: "周刊",
+        interval: Time.Slow,
+        home: "https://www.sec-wiki.com/weekly",
+      },
+    },
+  },
+  "doonsec": {
+    name: "Doonsec",
+    column: "tech",
+    color: "green",
+    title: "公众号",
+    type: "realtime",
+    interval: Time.Common,
+    home: "https://wechat.doonsec.com",
+  },
 
   "qqvideo": {
     name: "腾讯视频",

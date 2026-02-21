@@ -1,63 +1,80 @@
 import type { SourceID } from "@shared/types"
 import { columns, metadata } from "@shared/metadata"
 import { sources } from "@shared/sources"
-import { useMemo, useState } from "react"
-import { useAtom } from "jotai"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useAtom, useAtomValue } from "jotai"
+import { focusSourcesAtom } from "~/atoms"
 import { currentReaderSourceAtom } from "~/atoms/reader"
 import { OverlayScrollbar } from "~/components/common/overlay-scrollbar"
 
 export function Sidebar() {
   const [filter, setFilter] = useState("")
-  const [column, setColumn] = useState<keyof typeof columns>("tech")
+  const focusSources = useAtomValue(focusSourcesAtom)
+  const [column, setColumn] = useState<keyof typeof columns>(() => focusSources.length ? "focus" : "tech")
+  const initialized = useRef(false)
+
+  useEffect(() => {
+    if (initialized.current) return
+    if (focusSources.length) setColumn("focus")
+    initialized.current = true
+  }, [focusSources])
 
   const groups = useMemo(() => {
-    const ids = metadata[column].sources
+    const ids = column === "focus" ? focusSources : metadata[column].sources
     return ids
       .map(id => ({ id, name: sources[id].name, title: sources[id].title }))
       .filter(x => x.name.toLowerCase().includes(filter.toLowerCase())
         || (x.title ?? "").toLowerCase().includes(filter.toLowerCase()))
-  }, [filter, column])
+  }, [filter, column, focusSources])
 
   return (
-    <OverlayScrollbar className="space-y-2 h-full overflow-y-auto" defer>
-      <div className="flex gap-2">
-        <input
-          className="input w-full text-sm px-2 py-1 rounded-md"
-          placeholder="筛选来源或标题"
-          value={filter}
-          onChange={e => setFilter(e.target.value)}
-        />
+    <OverlayScrollbar className="h-full overflow-y-auto" defer>
+      <div className="sticky top-0 z-10 bg-base/80 backdrop-blur px-2 pt-2 pb-2 space-y-2">
+        <div className="flex gap-2">
+          <input
+            className="input w-full text-sm px-2 py-1 rounded-md"
+            placeholder="筛选来源或标题"
+            value={filter}
+            onChange={e => setFilter(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {Object.keys(columns).map(k => (
+            <button
+              type="button"
+              key={k}
+              className={$([
+                "text-xs px-2 py-1 rounded-md",
+                column === k ? "color-primary bg-primary/10" : "op-70 hover:bg-base",
+              ])}
+              onClick={() => setColumn(k as keyof typeof columns)}
+            >
+              {columns[k as keyof typeof columns].zh}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-wrap gap-1">
-        {Object.keys(columns).map(k => (
-          <button
-            type="button"
-            key={k}
-            className={$([
-              "text-xs px-2 py-1 rounded-md",
-              column === k ? "color-primary bg-primary/10" : "op-70 hover:bg-base",
-            ])}
-            onClick={() => setColumn(k as keyof typeof columns)}
-          >
-            {columns[k as keyof typeof columns].zh}
-          </button>
-        ))}
-      </div>
-      <nav className="space-y-1">
-        {groups.map(g => (
-          <SourceItem key={g.id} id={g.id} name={g.name} title={g.title} />
-        ))}
+      <nav className="space-y-1 px-2 pb-2">
+        {groups.length
+          ? groups.map(g => (
+              <SourceItem key={g.id} id={g.id} name={g.name} title={g.title} />
+            ))
+          : (
+              <div className="text-xs op-60 px-2 py-3">
+                {column === "focus" ? "关注为空" : "暂无来源"}
+              </div>
+            )}
       </nav>
     </OverlayScrollbar>
   )
 }
 
 function SourceItem({ id, name, title }: { id: SourceID, name: string, title?: string }) {
-  const [, setCurrent] = useAtom(currentReaderSourceAtom)
+  const [current, setCurrent] = useAtom(currentReaderSourceAtom)
   return (
     <button
       type="button"
-      className="w-full flex items-center gap-2 justify-start px-2 py-2 rounded-lg hover:bg-base text-sm transition-all"
+      className={$("w-full flex items-center gap-2 justify-start px-2 py-2 rounded-lg text-sm transition-all", current === id ? "bg-base color-primary" : "hover:bg-base")}
       onClick={() => setCurrent(id)}
     >
       <span
