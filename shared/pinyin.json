@@ -38,6 +38,8 @@
   "kaopu": "kaopuxinwen",
   "jin10": "jinshishuju",
   "baidu": "baiduresou",
+  "linuxdo-latest": "LINUX DO-zuixin",
+  "linuxdo-hot": "LINUX DO-jinrizuire",
   "nowcoder": "niuke",
   "sspai": "shaoshupai",
   "juejin": "xitujuejin",
@@ -52,5 +54,9 @@
   "secwiki-weekly": "SecWiki-zhoukan",
   "doonsec": "Doonsec-gongzhonghao",
   "qqvideo-tv-hotsearch": "tengxunshipin-resoubang",
-  "iqiyi-hot-ranklist": "aiqiyi-rebobang"
+  "iqiyi-hot-ranklist": "aiqiyi-rebobang",
+  "moomoo-en": "Moomoo-English",
+  "moomoo-zhhans": "Moomoo-jiantizhongwen",
+  "moomoo-zhhant": "Moomoo-fantizhongwen",
+  "moomoo-ja": "Moomoo-ribenyu"
 }

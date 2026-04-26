@@ -428,6 +428,32 @@
     "color": "blue",
     "interval": 600000
   },
+  "linuxdo": {
+    "redirect": "linuxdo-latest",
+    "name": "LINUX DO",
+    "column": "tech",
+    "home": "https://linux.do/latest",
+    "color": "slate",
+    "interval": 600000,
+    "title": "最新"
+  },
+  "linuxdo-latest": {
+    "name": "LINUX DO",
+    "column": "tech",
+    "home": "https://linux.do/latest",
+    "color": "slate",
+    "interval": 600000,
+    "title": "最新"
+  },
+  "linuxdo-hot": {
+    "name": "LINUX DO",
+    "type": "hottest",
+    "column": "tech",
+    "home": "https://linux.do/hot",
+    "color": "slate",
+    "interval": 1800000,
+    "title": "今日最热"
+  },
   "nowcoder": {
     "name": "牛客",
     "type": "hottest",
@@ -604,5 +630,51 @@
     "color": "green",
     "interval": 1800000,
     "title": "热播榜"
+  },
+  "moomoo": {
+    "redirect": "moomoo-en",
+    "name": "Moomoo",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://www.moomoo.com",
+    "color": "orange",
+    "interval": 300000,
+    "title": "English"
+  },
+  "moomoo-en": {
+    "name": "Moomoo",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://www.moomoo.com",
+    "color": "orange",
+    "interval": 300000,
+    "title": "English"
+  },
+  "moomoo-zhhans": {
+    "name": "Moomoo",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://www.moomoo.com",
+    "color": "orange",
+    "interval": 300000,
+    "title": "简体中文"
+  },
+  "moomoo-zhhant": {
+    "name": "Moomoo",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://www.moomoo.com",
+    "color": "orange",
+    "interval": 300000,
+    "title": "繁體中文"
+  },
+  "moomoo-ja": {
+    "name": "Moomoo",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://www.moomoo.com",
+    "color": "orange",
+    "interval": 300000,
+    "title": "日本語"
   }
 }

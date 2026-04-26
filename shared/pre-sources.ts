@@ -345,7 +345,6 @@ export const originSources = {
     column: "tech",
     color: "slate",
     home: "https://linux.do/",
-    disable: true,
     sub: {
       latest: {
         title: "最新",
@@ -514,6 +513,34 @@ export const originSources = {
         type: "hottest",
         interval: Time.Common,
         home: "https://www.iqiyi.com",
+      },
+    },
+  },
+  "moomoo": {
+    name: "Moomoo",
+    color: "orange",
+    column: "finance",
+    home: "https://www.moomoo.com",
+    sub: {
+      en: {
+        title: "English",
+        interval: Time.Fast,
+        type: "realtime",
+      },
+      zhhans: {
+        title: "简体中文",
+        interval: Time.Fast,
+        type: "realtime",
+      },
+      zhhant: {
+        title: "繁體中文",
+        interval: Time.Fast,
+        type: "realtime",
+      },
+      ja: {
+        title: "日本語",
+        interval: Time.Fast,
+        type: "realtime",
       },
     },
   },
