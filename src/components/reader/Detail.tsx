@@ -30,6 +30,9 @@ export function Detail() {
     "zhuanlan.zhihu.com",
     "weibo.com",
     "www.weibo.com",
+    "cls.cn",
+    "www.cls.cn",
+    "api3.cls.cn",
   ]), [])
   const [probeBlocked, setProbeBlocked] = useState<boolean | null>(null)
   const useRenderProxy = blockedPreviewHosts.has(hostname) || probeBlocked === true
@@ -83,7 +86,7 @@ export function Detail() {
       const q = new URLSearchParams({ type: "encodeURIComponent", url })
       if (allowScripts) q.set("scripts", "1")
       if (useExtractMode) q.set("mode", "extract")
-      myFetch(`/render?${q.toString()}`)
+      myFetch(`/api/render?${q.toString()}`)
         .then((html: string) => {
           if (active) setRenderHTML(html)
         })

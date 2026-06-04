@@ -2,7 +2,7 @@
 const params = {
   appName: "CailianpressWeb",
   os: "web",
-  sv: "7.7.5",
+  sv: "8.7.9",
 }
 
 export async function getSearchParams(moreParams?: any) {

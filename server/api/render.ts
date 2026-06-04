@@ -1,5 +1,54 @@
+import http2 from "node:http2"
+import process from "node:process"
 import * as cheerio from "cheerio"
 import { decodeBase64URL } from "#/utils/base64"
+
+async function fetchHTML(target: string): Promise<string> {
+  if (process.env.CF_PAGES) {
+    return myFetch(target, {
+      headers: {
+        referer: new URL(target).origin,
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      },
+    }) as Promise<string>
+  }
+
+  try {
+    return await myFetch(target, {
+      headers: {
+        referer: new URL(target).origin,
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      },
+    }) as string
+  } catch (e: any) {
+    if (e?.statusCode === 403) {
+      const url = new URL(target)
+      return new Promise((resolve, reject) => {
+        const client = http2.connect(`https://${url.hostname}`)
+        const req = client.request({
+          ":path": url.pathname + url.search,
+          ":method": "GET",
+          "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+          "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          "referer": url.origin,
+        })
+
+        let data = ""
+        req.on("data", chunk => data += chunk)
+        req.on("end", () => {
+          client.close()
+          resolve(data)
+        })
+        req.on("error", (err) => {
+          client.close()
+          reject(err)
+        })
+        req.end()
+      })
+    }
+    throw e
+  }
+}
 
 export default defineEventHandler(async (event) => {
   const { url, type = "encodeURIComponent", mode, scripts } = getQuery(event)
@@ -11,29 +60,18 @@ export default defineEventHandler(async (event) => {
     : decodeBase64URL(url as string)
 
   try {
-    // 直连获取 HTML
-    const html = await myFetch(target, {
-      headers: {
-        // 避免部分站点反爬 403
-        referer: new URL(target).origin,
-        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-      },
-    }) as string
+    const html = await fetchHTML(target)
 
-    // 阅读模式（抽取正文）
     if (mode === "extract") {
       const $ = cheerio.load(html)
-      // 简化：优先 article/main 容器；否则 body
       const main = $("article, main, #root, .content, .RichContent, .QuestionPage").first()
       const content = (main.length ? main.html() : $("body").html()) || ""
       return `<!doctype html><html><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><style>img{max-width:100%;height:auto}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}</style></head><body>${content}</body></html>`
     }
 
-    // 脚本控制：默认去除脚本，若 scripts=1 则原样
     if (scripts !== "1") {
       const $ = cheerio.load(html)
       $("script").remove()
-      // 去除危险的 CSP 注入
       $("meta[http-equiv='Content-Security-Policy']").remove()
       return $.html()
     }
