@@ -1,5 +1,6 @@
 import type { NewsItem } from "@shared/types"
 import * as cheerio from "cheerio"
+import { feedPreview } from "../utils/briefing-preview"
 
 // 定义文章统计信息接口
 interface ArticleStats {
@@ -176,6 +177,7 @@ const freebuf = defineSource(async () => {
       }
     })
     return articles.map(item => ({
+      preview: feedPreview({ link: item.url, description: item.description, image: item.image, author: item.author.name }, "listing"),
       id: extractIdFromUrl(item.url),
       title: item.title,
       url: item.url,

@@ -13,6 +13,9 @@ export interface RSSItem {
   description: string
   link: string
   created?: string
+  content?: string
+  author?: string
+  enclosures?: { url?: string, type?: string }[]
 }
 
 export interface CacheInfo {

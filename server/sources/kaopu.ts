@@ -10,6 +10,7 @@ export default defineSource(async () => {
   const res: Res = await $fetch("https://kaopustorage.blob.core.windows.net/news-prod/news_list_hans_0.json")
   return res.filter(k => ["财新", "公视"].every(h => k.publisher !== h)).map((k) => {
     return {
+      publisher: k.publisher,
       id: k.link,
       title: k.title,
       pubDate: k.pub_date,

@@ -1,6 +1,7 @@
 import type { NewsItem } from "@shared/types"
 import { load } from "cheerio"
 import dayjs from "dayjs/esm"
+import { feedPreview } from "../utils/briefing-preview"
 
 const quick = defineSource(async () => {
   const baseURL = "https://www.36kr.com"
@@ -17,6 +18,7 @@ const quick = defineSource(async () => {
     const relativeDate = $el.find(".time").text()
     if (url && title && relativeDate) {
       news.push({
+        preview: feedPreview({ link: `${baseURL}${url}`, description: $el.find(".item-desc, .item-description").text(), created: parseRelativeDate(relativeDate, "Asia/Shanghai").valueOf() }, "listing"),
         url: `${baseURL}${url}`,
         title,
         id: url,

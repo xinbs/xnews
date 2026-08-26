@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio"
 import type { NewsItem } from "@shared/types"
+import { feedPreview } from "../utils/briefing-preview"
 
 export default defineSource(async () => {
   const baseURL = "https://www.solidot.org"
@@ -15,6 +16,7 @@ export default defineSource(async () => {
     const date = date_raw?.replace(/[年月]/g, "-").replace("时", ":").replace(/[分日]/g, "")
     if (url && title && date) {
       news.push({
+        preview: feedPreview({ link: baseURL + url, content: $(el).find(".p_mainnew").html() || "", created: `${date.trim().replace(" ", "T")}:00+08:00` }, "listing"),
         url: baseURL + url,
         title,
         id: url,

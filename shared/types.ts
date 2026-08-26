@@ -84,7 +84,18 @@ export interface Column {
   sources: SourceID[]
 }
 
+export interface NewsPreview {
+  kind: "rss" | "listing" | "article"
+  summary: string
+  text: string
+  imageUrl: string | null
+  author: string
+  publishedAt: string | null
+}
+
 export interface NewsItem {
+  preview?: NewsPreview
+  publisher?: string
   id: string | number // unique
   title: string
   url: string
@@ -103,6 +114,7 @@ export interface NewsItem {
 }
 
 export interface SourceResponse {
+  freshness?: { fetchedAt: number | null, checkedAt: number, state: "fresh" | "cached" | "empty" | "error" }
   status: "success" | "cache"
   id: SourceID
   updatedTime: number | string

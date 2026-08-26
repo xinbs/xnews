@@ -1,4 +1,5 @@
 import type { SourceID, SourceResponse } from "@shared/types"
+import { sourceFreshness, withBriefingPreview } from "../../utils/briefing-preview"
 import { getters } from "#/getters"
 import { getCacheTable } from "#/database/cache"
 import type { CacheInfo } from "#/types"
@@ -31,7 +32,8 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
             status: "success",
             id,
             updatedTime: now,
-            items: cache.items,
+            items: cache.items.map(withBriefingPreview),
+            freshness: sourceFreshness(cache.updated, now, "cached"),
           }
         }
 
@@ -48,7 +50,8 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
               status: "cache",
               id,
               updatedTime: cache.updated,
-              items: cache.items,
+              items: cache.items.map(withBriefingPreview),
+              freshness: sourceFreshness(cache.updated, now, "cached"),
             }
           }
         }
@@ -66,7 +69,8 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
         status: "success",
         id,
         updatedTime: now,
-        items: newData,
+        items: newData.map(withBriefingPreview),
+        freshness: sourceFreshness(newData.length ? now : null, now, newData.length ? "fresh" : "empty"),
       }
     } catch (e) {
       if (cache!) {
@@ -74,7 +78,8 @@ export default defineEventHandler(async (event): Promise<SourceResponse> => {
           status: "cache",
           id,
           updatedTime: cache.updated,
-          items: cache.items,
+          items: cache.items.map(withBriefingPreview),
+          freshness: sourceFreshness(cache.updated, now, "error"),
         }
       } else {
         throw e

@@ -1,6 +1,7 @@
 import process from "node:process"
 import type { AllSourceID } from "@shared/types"
 import defu from "defu"
+import { feedPreview } from "./briefing-preview"
 import type { RSSHubOption, RSSHubInfo as RSSHubResponse, SourceGetter, SourceOption } from "#/types"
 
 type R = Partial<Record<AllSourceID, SourceGetter>>
@@ -15,6 +16,7 @@ export function defineRSSSource(url: string, option?: SourceOption): SourceGette
     const data = await rss2json(url)
     if (!data?.items.length) throw new Error("Cannot fetch rss data")
     return data.items.map(item => ({
+      preview: feedPreview(item),
       title: item.title,
       url: item.link,
       id: item.link,
@@ -38,6 +40,7 @@ export function defineRSSHubSource(route: string, RSSHubOptions?: RSSHubOption, 
     })
     const data: RSSHubResponse = await myFetch(url)
     return data.items.map(item => ({
+      preview: feedPreview({ link: item.url, content: item.content_html, created: item.date_published }),
       title: item.title,
       url: item.url,
       id: item.id ?? item.url,
