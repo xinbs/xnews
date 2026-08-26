@@ -15,7 +15,7 @@ const topics = {
   world: /(?:\b(?:war|ceasefire|sanctions|election|earthquake|diplomat|central.bank|renewable|energy|tariff)\b|战争|停火|制裁|央行|外交|选举|地震|关税|能源|国际)/i,
   security: /(?:\bCVE-\d{4}|ransomware|data.breach|remote.code.execution|actively.exploited|cyberattack|cybersecurity|\bexploit\b|数据泄露|远程代码执行|在野利用|勒索|网络攻击|安全漏洞)/i,
 }
-const spam = /airdrop|claim.{0,20}(?:token|reward)|giveaway|referral.code|空投|抽奖|返佣|免费领币|稳赚|博彩|赌球|加群领取/i
+const spam = /airdrop|claim.{0,20}(?:token|reward)|giveaway|referral.code|空投|抽奖|返佣|免费领币|稳赚|博彩|赌球|加群领取|你们.{0,15}(?:遇到|怎么看|觉得)|大家.{0,15}(?:怎么看|觉得)|what do you think|have you ever/i
 const INTERVAL = 10 * 60000
 const MAX_BYTES = 512000
 const failure = (code: string) => Object.assign(new Error(code), { code })

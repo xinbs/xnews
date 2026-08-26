@@ -25,7 +25,7 @@ describe("x discovery contract", () => {
       expect(normalizeXPosts(envelope([{ ...broad, ...patch }]), "tech", now)).toEqual([])
   })
   it("filters actual content and promotion, not search matching or popularity", () => {
-    for (const text of ["AI agent airdrop: claim free tokens!", "今晚足球比赛", "Fear of emotional vulnerability"])
+    for (const text of ["AI agent airdrop: claim free tokens!", "今晚足球比赛", "Fear of emotional vulnerability", "看到用户ETH被转走，数据泄露风险很大。你们遇到过钓鱼攻击吗？ @promo"])
       expect(normalizeXPosts(envelope([{ ...post, text }]), "security", now)).toEqual([])
     expect(normalizeXPosts(envelope([{ ...post, text: "Remote code execution fixed in CVE-2026-12345. See advisory." }]), "security", now)).toHaveLength(1)
     expect(normalizeXPosts(envelope([{ ...post, text: "<b>开源模型正文</b><script>bad()</script>" }]), "tech", now)[0].preview?.text).toBe("开源模型正文")
