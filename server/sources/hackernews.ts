@@ -19,6 +19,7 @@ export default defineSource(async () => {
         url,
         title,
         id,
+        relatedUrls: a.attr("href")?.startsWith("https://") ? [a.attr("href")!] : [],
         extra: {
           info: score,
         },

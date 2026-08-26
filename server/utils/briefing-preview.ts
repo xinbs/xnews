@@ -48,9 +48,24 @@ export function withBriefingPreview(item: NewsItem): NewsItem {
 
 export function articlePreview(html: string, url: string): NewsPreview {
   const $ = load(html.slice(0, 1_000_000))
+  let article: Record<string, any> = {}
+  $("script[type='application/ld+json']").slice(0, 8).each((_index, element) => {
+    try {
+      const value = JSON.parse($(element).text())
+      const nodes = (Array.isArray(value) ? value : [value, ...(Array.isArray(value?.["@graph"]) ? value["@graph"] : [])]).slice(0, 30)
+      const match = nodes.find(node => /^(?:NewsArticle|Article|BlogPosting)$/.test(String(node?.["@type"])))
+      if (match && !article["@type"]) article = match
+    } catch { /* Broken metadata is not body evidence. */ }
+  })
   const main = $("article, [itemprop='articleBody'], #paragraph, .post-content, .news-content, .main-content .content").first()
-  const description = $("meta[property='og:description'],meta[name='description']").first().attr("content")
-  return feedPreview({ link: url, description, content: main.html() || "", image: $("meta[property='og:image']").first().attr("content"), author: $("meta[name='author']").attr("content"), created: $("meta[property='article:published_time']").attr("content") }, "article")
+  const description = $("meta[property='og:description'],meta[name='description'],meta[name='twitter:description']").first().attr("content") || article.description
+  const paywalled = article.isAccessibleForFree === false || article.isAccessibleForFree === "false"
+  const schemaBody = article.isAccessibleForFree === true || article.isAccessibleForFree === "true" ? article.articleBody : ""
+  const content = paywalled ? "" : main.html() || schemaBody || ""
+  const image = Array.isArray(article.image) ? article.image[0] : article.image
+  const author = Array.isArray(article.author) ? article.author[0] : article.author
+  const preview = feedPreview({ link: url, description, content, image: $("meta[property='og:image']").first().attr("content") || image?.url || image, author: $("meta[name='author']").attr("content") || author?.name || author, created: $("meta[property='article:published_time']").attr("content") || article.datePublished }, "article")
+  return { ...preview, url, status: preview.text ? "available" : "partial" }
 }
 
 export function sourceFreshness(fetchedAt: number | null, checkedAt: number, state: "fresh" | "cached" | "empty" | "error") {

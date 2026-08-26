@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { briefingSources } from "@shared/briefing-sources"
 import solidot from "../sources/solidot"
 import freebuf from "../sources/freebuf"
+import hackernews from "../sources/hackernews"
 import { articlePreview, feedPreview, sourceFreshness } from "./briefing-preview"
 import { assertArticleUrl, fetchBriefingArticle, isPublicIPv4 } from "./briefing-fetch"
 import { myFetch } from "./fetch"
@@ -80,6 +81,13 @@ describe("briefing preview contract", () => {
     expect(item.preview?.publishedAt).toBe("2026-08-26T02:30:00.000Z")
     expect(JSON.stringify(item.preview)).not.toContain("bad")
   })
+  it("preserves HN discussion links and only adds public HTTPS article candidates", async () => {
+    vi.mocked(myFetch).mockResolvedValueOnce("<table><tr class=\"athing\" id=\"42\"><td class=\"titleline\"><a href=\"https://openai.com/news/example\">AI research</a></td></tr><tr class=\"athing\" id=\"43\"><td class=\"titleline\"><a href=\"javascript:bad()\">Unsafe link</a></td></tr></table>")
+    const items = await hackernews()
+    expect(items[0]).toMatchObject({ id: "42", title: "AI research", url: "https://news.ycombinator.com/item?id=42", relatedUrls: ["https://openai.com/news/example"] })
+    expect(items[1].relatedUrls).toEqual([])
+    vi.mocked(myFetch).mockReset()
+  })
   it("preserves FreeBuf summary, author and image when RSSHub has no articles", async () => {
     vi.mocked(myFetch).mockImplementation(async (url: unknown) => String(url).startsWith("https://rsshub.") ? { items: [] } : "<div class=\"article-item\"><div class=\"title-left\"><a href=\"/articles/web/123.html\"><span class=\"title\">漏洞修复说明</span></a></div><div class=\"item-right\"><div class=\"text-line-2\">修复版本与影响范围</div></div><div class=\"item-bottom\"><a href=\"/author/a\"><span>研究团队</span></a><span>今天</span></div><div class=\"img-view\"><img src=\"https://image.freebuf.com/cover.png\"></div></div>")
     const [item] = await freebuf()
@@ -117,4 +125,17 @@ describe("briefing preview contract", () => {
     expect(isPublicIPv4("8.8.8.8")).toBe(true)
     expect(assertArticleUrl("https://www.ithome.com/1", ["ithome.com"]).hostname).toBe("www.ithome.com")
   })
+})
+
+it("uses public structured descriptions but never extracts paywalled articleBody", () => {
+  const preview = articlePreview("<script type=\"application/ld+json\">{\"@type\":\"NewsArticle\",\"description\":\"A public article description\",\"articleBody\":\"Paid full body\",\"isAccessibleForFree\":false,\"image\":{\"url\":\"https://images.example.org/a.jpg\"}}</script>", "https://www.reuters.com/world/a")
+  expect(preview.summary).toBe("A public article description")
+  expect(preview.text).toBe("")
+  expect(preview.imageUrl).toBe("https://images.example.org/a.jpg")
+})
+
+it("extracts free article schema and ignores malformed structured blocks", () => {
+  const preview = articlePreview("<script type=\"application/ld+json\">{bad}</script><script type=\"application/ld+json\">{\"@graph\":[{\"@type\":\"NewsArticle\",\"description\":\"Summary\",\"articleBody\":\"<p>Public body</p>\",\"isAccessibleForFree\":true}]}</script>", "https://www.reuters.com/world/a")
+  expect(preview.summary).toBe("Summary")
+  expect(preview.text).toBe("Public body")
 })

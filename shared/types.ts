@@ -85,6 +85,8 @@ export interface Column {
 }
 
 export interface NewsPreview {
+  url?: string
+  status?: "available" | "partial" | "unavailable"
   kind: "rss" | "listing" | "article"
   summary: string
   text: string
@@ -94,6 +96,8 @@ export interface NewsPreview {
 }
 
 export interface NewsItem {
+  relatedUrls?: string[]
+  discovery?: { channels: string[], fetchedAt: number, public: true }
   preview?: NewsPreview
   publisher?: string
   id: string | number // unique

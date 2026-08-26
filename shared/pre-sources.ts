@@ -13,6 +13,20 @@ const Time = {
 }
 
 export const originSources = {
+  "x": {
+    name: "X 公开资讯",
+    color: "slate",
+    type: "realtime",
+    interval: Time.Default,
+    disable: "cf",
+    home: "https://x.com",
+    desc: "关注时间线与主题 Latest/Top 搜索，仅保留明确公开的原帖；账号陈述不等于独立证实",
+    sub: {
+      tech: { title: "科技与 AI", column: "tech" },
+      world: { title: "国际要闻", column: "world" },
+      security: { title: "网络安全", column: "tech" },
+    },
+  },
   "v2ex": {
     name: "V2EX",
     color: "slate",
