@@ -25,6 +25,7 @@ export const originSources = {
       tech: { title: "科技与 AI", column: "tech" },
       world: { title: "国际要闻", column: "world" },
       security: { title: "网络安全", column: "tech" },
+      hot: { title: "综合热点", column: "china" },
     },
   },
   "v2ex": {

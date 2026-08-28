@@ -44,6 +44,17 @@
     "interval": 600000,
     "title": "网络安全"
   },
+  "x-hot": {
+    "name": "X 公开资讯",
+    "type": "realtime",
+    "disable": "cf",
+    "desc": "关注时间线与主题 Latest/Top 搜索，仅保留明确公开的原帖；账号陈述不等于独立证实",
+    "column": "china",
+    "home": "https://x.com",
+    "color": "slate",
+    "interval": 600000,
+    "title": "综合热点"
+  },
   "v2ex": {
     "redirect": "v2ex-share",
     "name": "V2EX",

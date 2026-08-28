@@ -6,4 +6,5 @@ export default defineSource({
   "x-tech": () => read("tech"),
   "x-world": () => read("world"),
   "x-security": () => read("security"),
+  "x-hot": () => read("hot"),
 })

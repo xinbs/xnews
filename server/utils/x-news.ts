@@ -7,6 +7,7 @@ export const xNewsProfiles = {
   tech: "(\"AI agent\" OR \"open weights\" OR \"LLM\" OR \"模型发布\" OR \"开源模型\" OR \"人工智能\" OR \"芯片\")",
   world: "(\"ceasefire\" OR \"sanctions\" OR \"central bank\" OR \"renewable energy\" OR \"停火\" OR \"制裁\" OR \"央行\" OR \"外交部\")",
   security: "(CVE OR \"remote code execution\" OR \"actively exploited\" OR ransomware OR \"数据泄露\" OR \"远程代码执行\" OR \"在野利用\")",
+  hot: "(\"breaking news\" OR lawsuit OR statement OR response OR \"热搜\" OR \"突发\" OR \"起诉\" OR \"声明\" OR \"回应\" OR \"通报\")",
 } as const
 export type XNewsProfile = keyof typeof xNewsProfiles
 const attribution: Record<string, string> = { openai: "OpenAI", anthropicai: "Anthropic", googledeepmind: "Google DeepMind", reuters: "Reuters", ap: "Associated Press", bbcworld: "BBC", un_news_centre: "UN News", cisagov: "CISA", thehackersnews: "The Hacker News" }
@@ -14,8 +15,10 @@ const topics = {
   tech: /(?:\b(?:AI|LLM|GPT|Claude|Anthropic|OpenAI|Gemini|semiconductor|chip|open.weights)\b|模型|人工智能|芯片|开源|算力)/i,
   world: /(?:\b(?:war|ceasefire|sanctions|election|earthquake|diplomat|central.bank|renewable|energy|tariff)\b|战争|停火|制裁|央行|外交|选举|地震|关税|能源|国际)/i,
   security: /(?:\bCVE-\d{4}|ransomware|data.breach|remote.code.execution|actively.exploited|cyberattack|cybersecurity|\bexploit\b|数据泄露|远程代码执行|在野利用|勒索|网络攻击|安全漏洞)/i,
+  hot: /(?:\b(?:breaking.news|lawsuit|statement|response|alleges|denies|investigation|controversy)\b|热搜|突发|起诉|声明|回应|通报|爆料|否认|调查|争议|陈述|发文)/i,
 }
 const spam = /airdrop|claim.{0,20}(?:token|reward)|giveaway|referral.code|空投|抽奖|返佣|免费领币|稳赚|博彩|赌球|加群领取|你们.{0,15}(?:遇到|怎么看|觉得)|大家.{0,15}(?:怎么看|觉得)|what do you think|have you ever/i
+const linkOnly = /^(?:https?:\/\/\S+\s*)+$/i
 const INTERVAL = 10 * 60000
 const MAX_BYTES = 512000
 const failure = (code: string) => Object.assign(new Error(code), { code })
@@ -53,7 +56,7 @@ export function normalizeXPosts(payload: unknown, profile: XNewsProfile, now = D
     const text = previewText(raw.text, 6000)
     if (!text)
       throw failure("X_KIT_EMPTY_POST")
-    if (!topics[profile].test(text) || spam.test(text))
+    if (!(topics[profile].test(text) || (profile === "hot" && linkOnly.test(text))) || spam.test(text))
       continue
     const images: unknown[] = Array.isArray(raw.media?.images) ? raw.media.images : []
     const imageUrl = images.find((value) => {
@@ -135,7 +138,7 @@ export function createXNewsClient({ env = process.env, fetchImpl = fetch, now = 
     else
       active--
   }
-  async function surface(key: string, path: string, params: Record<string, string> = {}): Promise<Snapshot> {
+  async function surface(key: string, path: string, params: Record<string, string> = {}, kind: "posts" | "article" = "posts"): Promise<Snapshot> {
     const saved = surfaces.get(key)
     if (saved && now() < saved.until)
       return saved.result
@@ -149,7 +152,7 @@ export function createXNewsClient({ env = process.env, fetchImpl = fetch, now = 
           budgetAt = now()
           used = 0
         }
-        if (used >= 7)
+        if (used >= 11)
           throw failure("X_KIT_BUDGET_EXHAUSTED")
         const base = new URL(env.X_KIT_API_BASE_URL || "http://192.168.31.119:3000")
         if (!/^https?:$/.test(base.protocol) || base.username || base.password || base.search || base.hash || base.pathname !== "/")
@@ -172,10 +175,14 @@ export function createXNewsClient({ env = process.env, fetchImpl = fetch, now = 
           throw failure(`X_KIT_HTTP_${response.status}`)
         }
         const data = await readXKitJson(response)
-        if (data?.success !== true || !Array.isArray(data?.data) || data.data.length > 100)
-          throw failure("X_KIT_INVALID_RESPONSE")
-        if (data.data.length && data.data.every((post: { user?: { protected?: unknown } }) => typeof post?.user?.protected !== "boolean"))
-          throw failure("X_KIT_PUBLIC_STATUS_UNAVAILABLE")
+        if (kind === "posts") {
+          if (data?.success !== true || !Array.isArray(data?.data) || data.data.length > 100)
+            throw failure("X_KIT_INVALID_RESPONSE")
+          if (data.data.length && data.data.every((post: { user?: { protected?: unknown } }) => typeof post?.user?.protected !== "boolean"))
+            throw failure("X_KIT_PUBLIC_STATUS_UNAVAILABLE")
+        } else if (data?.success !== true || data?.isArticle !== true || typeof data?.articleId !== "string" || typeof data?.article?.title !== "string" || typeof data?.content !== "string" || !data?.tweet || typeof data.tweet !== "object") {
+          throw failure("X_KIT_INVALID_ARTICLE")
+        }
         return { data, at: now() }
       } catch (error) {
         slot.until = now() + 60000
@@ -245,6 +252,27 @@ export function createXNewsClient({ env = process.env, fetchImpl = fetch, now = 
             selected.set(id, item)
           }
         }
+      }
+      if (profile === "hot") {
+        const expandable = [...selected.values()].filter(item => linkOnly.test(String(item.preview?.text || ""))).slice(0, 2)
+        await Promise.all(expandable.map(async (item) => {
+          try {
+            const result = await surface(`article-${item.id}`, "/api/article", { id: String(item.id) }, "article")
+            const data = result.data as { articleId: string, article: { title: string }, content: string, tweet: { id?: unknown, user?: { screenName?: unknown, protected?: unknown }, restrictedAudience?: unknown, possiblySensitive?: unknown } }
+            const expectedAuthor = String(item.preview?.author || "").replace(/^@/, "").toLowerCase()
+            if (data.articleId !== String(item.id) || data.tweet.id !== String(item.id) || String(data.tweet.user?.screenName || "").toLowerCase() !== expectedAuthor || data.tweet.user?.protected !== false || data.tweet.restrictedAudience === true || data.tweet.possiblySensitive === true)
+              throw failure("X_KIT_INVALID_ARTICLE")
+            const title = previewText(data.article.title, 300)
+            const content = previewText(data.content, 6000)
+            if (!title || content.length < 80 || !topics.hot.test(`${title}\n${content}`) || spam.test(`${title}\n${content}`))
+              throw failure("X_KIT_IRRELEVANT_ARTICLE")
+            item.title = Array.from(title).slice(0, 160).join("")
+            item.extra = { ...item.extra, hover: content.slice(0, 1200) }
+            item.preview = { kind: "article", summary: content.slice(0, 1200), text: content, author: item.preview?.author || "", imageUrl: item.preview?.imageUrl || null, publishedAt: item.preview?.publishedAt || null }
+          } catch {
+            selected.delete(item.id)
+          }
+        }))
       }
       return [...selected.values()].sort((a, b) => Date.parse(String(b.pubDate)) - Date.parse(String(a.pubDate)))
     })().finally(() => pending.delete(profile))

@@ -111,7 +111,7 @@ describe("x discovery contract", () => {
       await read("tech").catch(() => { })
       time += 61000
     }
-    expect(fetchImpl).toHaveBeenCalledTimes(7)
+    expect(fetchImpl).toHaveBeenCalledTimes(11)
   })
   it("rejects unknown profiles and unsafe configuration; disabled sources never fetch", async () => {
     const fetchImpl = vi.fn()
@@ -132,7 +132,27 @@ describe("x discovery contract", () => {
     expect(getBriefingSourceCatalog().sources.filter(s => s.id.startsWith("x-")).every(s => !s.enabled)).toBe(true)
     vi.stubEnv("X_NEWS_ENABLED", "true")
     vi.stubEnv("CF_PAGES", "")
-    expect(getBriefingSourceCatalog().sources.filter(s => s.id.startsWith("x-")).map(s => [s.id, s.enabled])).toEqual([["x-tech", true], ["x-world", true], ["x-security", true]])
+    expect(getBriefingSourceCatalog().sources.filter(s => s.id.startsWith("x-")).map(s => [s.id, s.enabled])).toEqual([["x-tech", true], ["x-world", true], ["x-security", true], ["x-hot", true]])
+  })
+
+  it("exposes bounded general-hot sources separately from factual and industry feeds", () => {
+    const hot = getBriefingSourceCatalog().sources.filter(source => source.category === "general")
+    expect(hot.map(source => source.id)).toEqual(["tencent-hot", "thepaper", "toutiao", "baidu", "ifeng", "x-hot"])
+    expect(hot.slice(0, 5).every(source => source.role === "hot-discovery")).toBe(true)
+    expect(hot.at(-1)?.role).toBe("primary-discovery")
+  })
+
+  it("expands a public link-only X hotspot through the existing article contract", async () => {
+    const focal = { ...post, id: "2092932777612390850", text: "https://t.co/nLMTwWr67Z", user: { screenName: "justinsuntron", protected: false }, url: "https://x.com/justinsuntron/status/2092932777612390850" }
+    const fetchImpl = vi.fn(async (input: URL | string | Request) => {
+      const url = new URL(String(input))
+      if (url.pathname === "/api/article") return response({ success: true, articleId: focal.id, isArticle: true, article: { title: "我的女友景甜" }, content: "孙宇晨发布长文陈述个人说法，文末注明本文纯属虚构，如有雷同纯属巧合。".repeat(20), tweet: focal })
+      return response(envelope([focal]))
+    })
+    const items = await createXNewsClient({ env, fetchImpl: fetchImpl as typeof fetch, now: () => now })("hot")
+    expect(items[0]).toMatchObject({ id: focal.id, title: "我的女友景甜", publisher: "X · @justinsuntron" })
+    expect(items[0].preview?.text).toContain("纯属虚构")
+    expect(fetchImpl.mock.calls.filter(([input]) => new URL(String(input)).pathname === "/api/article")).toHaveLength(1)
   })
 })
 
