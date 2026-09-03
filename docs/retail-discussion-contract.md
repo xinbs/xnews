@@ -1,5 +1,17 @@
 # Public retail-discussion sampling v1
 
+## Additional independent Taoguba source
+
+`GET /api/s/retail/tgb` has no query parameters. Response: version1, source:tgb-public, state, fetchedAt, checkedAt, posts, coverage. Each 6–1200-character excerpt has namespaced id, parentId, post/reply kind, title, text hash, one-way author hash, canonical public URL, actual publication time, observation time, truncation flag. No profile fields. Replies use their own timestamps, never parent or latest-reply time. Only current Shanghai day plus six preceding days; never future posts.
+
+Discovery reads at most24 ordinary public list pages, finds actual dates, and chooses at most8 threads/day, unchecked then active first. Only the first two threads/day may read one extra public next page.120 requests/hour persisted before network,1.2-second spacing, single-flight, one-hour cache including failures,7-day retention/max4200 excerpts, latest200/day returned/max1400. Always bounded:true and complete:false; active-thread bias and missing dates remain visible.
+
+Reuses truthful xnews-briefing User-Agent and safe HTTPS reader (allowlist, public DNS pinning,8s,1MB). No cookies, login, bypass, hidden paid content, arbitrary URL/page/date, new dependency. A failed page stops the run, preserving previous and already-read excerpts with original clocks. Only successfully read new bodies advance fetchedAt, including partial runs. No full-body UI mirror: the consumer shows aggregate counts and short attributed evidence.
+
+Eastmoney endpoint/cache stay unchanged; stock_analysis owns source-aware aggregation and cross-source deduplication. Snowball hot-stock feed is not a post source. Deployment uses the exact existing retail-ee4503e image as a build-output overlay, retaining Linux node_modules, configuration and data mount.
+
+## Existing Eastmoney contract
+
 Approved scope: add bounded public Guba sampling and jointly deploy with stock_analysis. No purchased data, authentication bypass, new dependency or trading changes.
 
 `GET /api/s/retail/sample?code=000001` accepts only validated six-digit A-share codes. No arbitrary URL, pagination or force-refresh input. Returns version, source, code, real fetched/checked timestamps, state, normalized posts and coverage. A post has an id, code, source URL, plain text (max 1,200 chars; truncation flagged), title, publication time, content hash and hashed author ID. Nickname, IP, age and other profile data are not retained. The hash is for deduplication, not expertise inference.
